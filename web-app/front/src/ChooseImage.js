@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Button = styled.button`
-  background: #D9D9D9;
-  border: 2px solid #D9D9D9;
+  background: #d9d9d9;
+  border: 2px solid #d9d9d9;
+  text-align: center;
+  margin: 10px;
   width: 413px;
   height: 100px;
   font-size: 34px;
@@ -14,11 +17,9 @@ const Button = styled.button`
 `;
 
 const Title = styled.h1`
-
-  width: 603px;
-  height: 73px;
-
   font-style: normal;
+  padding-right: 100px;
+  padding-left: 100px;
   font-weight: 600;
   font-size: 64px;
   line-height: 77px;
@@ -26,16 +27,35 @@ const Title = styled.h1`
   text-transform: uppercase;
 `;
 
+const General = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export default function ChooseImage() {
-    return(
-        <>
-            <Title>What pictures do you want to play with ?</Title>
-            <Button type="button">
-                Random
-            </Button>
-            <Button type="button">
-                Upload from computer
-            </Button>
-        </>
-    );
+  const navigate = useNavigate();
+  return (
+    <>
+      <General>
+        <Title>What pictures do you want to play with ?</Title>
+        <Button
+          type="button"
+          onClick={() => {
+            navigate("/mode");
+          }}
+        >
+          Random
+        </Button>
+        <Button
+          type="button"
+          onClick={() => {
+            navigate("/mode");
+          }}
+        >
+          Upload from computer
+        </Button>
+      </General>
+    </>
+  );
 }
