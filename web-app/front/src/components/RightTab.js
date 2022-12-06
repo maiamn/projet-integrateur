@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+
 
 const Tab = styled.div`
   width: 349px;
@@ -37,19 +40,65 @@ const Buttons = styled.div`
 `;
 
 
+
 export default function RightTab() {
+
+  const [isActive, setIsActive] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [time, setTime] = useState(0);
+  const name = useSelector(state => state.profile.value)
+  const navigate = useNavigate();
+
+
+
+  React.useEffect(() => {
+    let interval = null;
+  
+    if (isActive && isPaused === false) {
+      interval = setInterval(() => {
+        setTime((time) => time + 10);
+      }, 10);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isActive, isPaused]);
+  
+  const handleStart = () => {
+    setIsActive(true);
+    setIsPaused(false);
+  };
+  
+  const handlePauseResume = () => {
+    setIsPaused(!isPaused);
+  };
+  
+  const handleReset = () => {
+    setIsActive(false);
+    setTime(0);
+  };
 
     return(
         <>
             <Wrapper>
                 <Tab> 
                   <p>Guess Who ?</p>
-                  <p>Player : XXXX</p>
-                  <p>Timer : XX:XX</p>
+                  <p>Player : {name}</p>
+                  <div>
+                  <span>Timer : </span>
+                    <span className="digits">
+                      {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+                    </span>
+                    <span className="digits">
+                      {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+                    </span>
+                  </div>
                   <Buttons>
-                    <Button>Home</Button>
+                    <Button onClick={() => navigate("/")}>Home</Button>
                     <Button>Abort</Button>
-                    <Button>Pause</Button>
+                    <Button onClick={() => handlePauseResume()}>{isPaused ? "Resume" : "Pause"}</Button>
                   </Buttons>
                 </Tab>
                 
