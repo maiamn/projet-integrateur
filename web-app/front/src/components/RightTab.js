@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 
 const Tab = styled.div`
-  width: 349px;
+  width: 100%;
   height: 100%;
-  margin-left: auto;
   background: #D9D9D9;
   font-size: 34px;
   text-align: center;
@@ -18,9 +17,9 @@ const Tab = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  position: absolute;
-  height: 100%;
-  width: 100%;
+  position: relative;
+  height: inherit;
+  width: inherit;
 `;
 
 const Button = styled.button`
