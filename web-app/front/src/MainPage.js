@@ -5,12 +5,16 @@ import APIService from './APIService';
 import styled from 'styled-components';
 import { TextField } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { update } from './redux/profileSlice'
+import { withRouter} from "react-router-dom";
+
 
 const Title = styled.h1`
 
   width: 603px;
   height: 73px;
-
+  
   font-style: normal;
   font-weight: 600;
   font-size: 64px;
@@ -49,13 +53,13 @@ function MainPage() {
   const navigate = useNavigate();
 
   const [data, setdata] = useState({
-      message: "rien"
+      image: ""
   });
 
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch('http://localhost:5000/',{
+    fetch('http://localhost:5000/db',{
       credentials: "include",
       'methods':'GET',
       headers : {
@@ -63,8 +67,7 @@ function MainPage() {
       }
     })
     .then(response => response.json().then(function(result){
-        console.log(result)
-        setdata({message: result.message,})
+        setdata({image: result.data,})
       }))
     .catch(error => console.log(error))
     
@@ -87,6 +90,12 @@ function MainPage() {
 
   console.log(message_envoye)
 
+  function test() {
+    navigate("/question");
+    dispatch(update(name));
+    
+  }
+
   return (
     <div className="App">
       
@@ -100,7 +109,8 @@ function MainPage() {
           onChange={(e) => handle(e.target.value)}
           //placeholder="Enter player's name"
         />
-        <PlayButton type="button" onClick={()=>  {navigate("/image") }}>
+        <PlayButton type="button" onClick={()=>  { test();
+       }}>
           Play
         </PlayButton>
         {/*<p>{data.message}</p>*/}
