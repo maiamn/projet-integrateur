@@ -53,13 +53,13 @@ function MainPage() {
   const navigate = useNavigate();
 
   const [data, setdata] = useState({
-      message: "rien"
+      image: ""
   });
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch('http://localhost:5000/',{
+    fetch('http://localhost:5000/db',{
       credentials: "include",
       'methods':'GET',
       headers : {
@@ -67,8 +67,7 @@ function MainPage() {
       }
     })
     .then(response => response.json().then(function(result){
-        console.log(result)
-        setdata({message: result.message,})
+        setdata({image: result.data,})
       }))
     .catch(error => console.log(error))
     
