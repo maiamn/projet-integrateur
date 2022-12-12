@@ -9,8 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./MainPage"
 import ChooseImage from "./ChooseImage"
 import Question_vPlayer from "./Question_vPlayer";
-
-
+import ChooseMode from "./ChooseMode";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +21,7 @@ root.render(
         <Route path="/image" element={<ChooseImage />}/>
         <Route path="/question" element={<Question_vPlayer />}/>
         <Route path="/" element={<MainPage />}/>
+        <Route path="/mode" element={<ChooseMode />} />
       </Routes>
       </BrowserRouter>
     </Provider>
