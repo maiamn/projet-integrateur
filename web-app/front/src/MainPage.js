@@ -5,12 +5,16 @@ import APIService from './APIService';
 import styled from 'styled-components';
 import { TextField } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { update } from './redux/profileSlice'
+import { withRouter} from "react-router-dom";
+
 
 const Title = styled.h1`
 
   width: 603px;
   height: 73px;
-
+  
   font-style: normal;
   font-weight: 600;
   font-size: 64px;
@@ -52,7 +56,7 @@ function MainPage() {
       message: "rien"
   });
 
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
     fetch('http://localhost:5000/',{
@@ -87,6 +91,12 @@ function MainPage() {
 
   console.log(message_envoye)
 
+  function test() {
+    navigate("/question");
+    dispatch(update(name));
+    
+  }
+
   return (
     <div className="App">
       
@@ -100,7 +110,8 @@ function MainPage() {
           onChange={(e) => handle(e.target.value)}
           //placeholder="Enter player's name"
         />
-        <PlayButton type="button" onClick={()=>  {navigate("/image") }}>
+        <PlayButton type="button" onClick={()=>  { test();
+       }}>
           Play
         </PlayButton>
         {/*<p>{data.message}</p>*/}
