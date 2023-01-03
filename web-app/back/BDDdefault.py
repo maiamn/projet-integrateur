@@ -60,7 +60,7 @@ def get_images():
     finally :
         return jsonify(response)
       
-# Get n images de celebrites
+# Get labels de celebrites
 @app.route("/labels", methods=["GET"])
 def get_labels():
     try :
