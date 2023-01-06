@@ -47,6 +47,7 @@ const General = styled.div`
 `;
 
 export default function ChooseMode() {
+
   return (
     <>
       <General>
