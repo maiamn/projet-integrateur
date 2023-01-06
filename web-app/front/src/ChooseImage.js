@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import ImportImages from "./components/Upload/ImportImages";
+/*import Upload from "./components/Upload/ImportImages";*/
 
 const Button = styled.button`
   background: #d9d9d9;
@@ -55,6 +57,7 @@ export default function ChooseImage() {
         >
           Upload from computer
         </Button>
+        <ImportImages></ImportImages>
       </General>
     </>
   );

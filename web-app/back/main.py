@@ -10,8 +10,6 @@ cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
 
-
-  
 @app.route('/', methods=["GET"])
 def firstRoute():
     return jsonify({"message" : "Hello world"})
@@ -23,6 +21,12 @@ def test_receive():
     name = infos["message"]["name"]
     print(name)
     return jsonify({"message": "Hello "+name})
+
+@app.route("/add", methods=["POST"])
+def add_images():
+    infos = request.files
+    print(infos)
+    return jsonify({"image": "coucou"})
 
 @app.route("/db", methods=["GET"])
 def test_DB():
