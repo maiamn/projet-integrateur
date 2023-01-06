@@ -3,79 +3,45 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-/*export default function MultipleImageUpload() {
-  const [image, setImage] = useState();
+export default function MultipleImageUpload() {
+  const [filesList, setFiles] = useState();
 
   const handleChange = (event) => {
-    setImage(event.target.files[0]);
-  };*/
-class Upload extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            file: null,
-            uploading: false
-        };
-        this.handleUpload = this.handleUpload.bind(this);
-    }
-    
-  async handleUpload (event) {
+    setFiles(Array.from(event.target.files));
+  };
 
-    const files = Array.from(event.target.files);
+  const handleUpload = () => {
     const formData = new FormData();
-    files.map((file, index) =>{
-      formData.append(`file${index}`, file);
+    filesList.map((file,i) => {
+      formData.append(`file-${i}`, file)
     })
-    // formData.append("file", files[0]); // key - value
 
     // Send to Flask
-    const response = await fetch(`http://localhost:5000/add`, {
+    fetch(`http://localhost:5000/add`, {
         method: 'POST',
         body: formData,
         contentType: false,
         processData: false
-    });
-    const data = await response.json();
-    console.log(data);
-    this.setState({
-        file: `data:image/jpeg;base64, ${data['data']}`,
-        uploading: true
-    });
-
-    /*const formData = new FormData();
-    formData.append("image", image, image.name);*/
-
-    /* fetch("http://localhost:5000/add", {
-      method: "POST",
-      body: image,
-      /*headers: {
-        "content-type": image.type,
-        "content-length": `${image.size}`,
-      },
-      
     })
-      .then((res) => console.log(res))
+    .then ((res) => res.json())
+    .then((data) => console.log(formData))
+  };
 
-      .catch((err) => console.error(err));
-  };*/
-}
+  const images = filesList ? [...filesList] : [];
 
-  render() {
     return (
-      /*<div>
-        <input type="file" onChange={handleChange} />
-        <div>{image && `${image.name} - ${image.type} - ${image.size}`}</div>
-        <button onClick={handleUpload}>Upload Image</button>
-      </div>*/
       <div>
-        <input type="file" multiple />
-        <button onClick={this.handleUpload}>Upload Image</button>
-        <br />
-        { this.state.file && <img src={this.state.file} alt="jeye"/> }
-      </div>
+      <input type="file" onChange={handleChange} multiple />
+
+      <ul>
+        {images.map((file, i) => (
+          <li key={i}>
+            {file.name} - {file.type}
+          </li>
+        ))}
+      </ul>
+
+      <button onClick={handleUpload}>Upload</button>
+    </div>
   );
 }
-}
-
-/* module.exports = Upload; */
-export default Upload;
