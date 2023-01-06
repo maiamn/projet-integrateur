@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
 import { ImageList } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 const PersonImage = styled.img`
     height: 130px;
@@ -56,29 +57,19 @@ const Title = styled.h1`
 `;
 
 export default function Question_vPlayer() {
-    const[gameState, setGameState] = useState("delete picture")
 
-    const [imageList, setImageList] = useState([
-        {id : 1, img : celebrity, isSelected : false}, {id : 2, img : celebrity, isSelected : false}, 
-        {id : 3, img : celebrity, isSelected : false}])
+    const [imageList, setImageList] = useState()
 
-        /*{img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false},
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}, 
-        {img : celebrity, isSelected : false}, {img : celebrity, isSelected : false}*/
+    const [selectedList, setSelectedList] = useState(Array(20).fill(false))
+
+    const mode = useSelector(state => state.profile.mode)
 
     const toggleSelected=(id)=>{
-        setImageList(() =>
-            imageList.map((image) => {
-            if (image.id == id) {
-                image.isSelected = !image.isSelected
+        setSelectedList(() => 
+            selectedList.map((image, index) => {
+            if(index == id) {
+                image = !image
             }
-
             return image;
             })
         );
@@ -86,17 +77,40 @@ export default function Question_vPlayer() {
 
     useEffect(() => {
       }, [ImageList]);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/celebs',{
+        credentials: "include",
+        method :'POST',
+        headers : {
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify({ 
+            "title": "get_n_celeb_images",
+            "user": 3,
+            "id_partie": 4,
+            "nb_images": 20
+        })
+        })
+        .then(response => response.json().then(function(result){
+            console.log(result.answer.images)
+            setImageList(result.answer.images)
+        }))
+        .catch(error => console.log(error))
         
-    console.log(imageList)
+    }, []);
+    
+        
+    console.log(selectedList)
     return(
     <Wrapper>
         <ImageWrapper>
-            {gameState == "delete picture" ? <Title>select the pictures to delete</Title> : <></>}
+            {mode == 0 ? <Title>select the pictures to delete</Title> : <Title>select the picture to guess</Title>}
             <ImageGrid>
-                {imageList.map((image) => {
+                {imageList && imageList.map((image, index) => {
                     return(  
                         <>
-                            <PersonImage onClick={() => toggleSelected(2)} src={image.img} isSelected={image.isSelected} alt="logo" />
+                            <PersonImage onClick={() => toggleSelected(index)} src={`data:image/png;base64,${image}`} isSelected={selectedList[index]} alt="logo" />
                         </>
                     )
                     })

@@ -12,7 +12,7 @@ app.secret_key = "123"
 cors.init_app(app)
 
 # Get n images de celebrites
-@app.route("/celebs", methods=["GET"])
+@app.route("/celebs", methods=["POST"])
 def get_images():
     try :
         # Get JSON request
@@ -34,16 +34,16 @@ def get_images():
 
         id_images = random.sample(id_list, nb_images)
 
-        """ images = []
+        images = []
         for id in id_images:
-            images.append(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')) """
+            images.append(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8'))
 
         response = {
             "title": "AnswerSrV",
             "user": req['user'],
             "id_partie": req['id_partie'],
             "nb_images": nb_images,
-            "answer": {"images": id_images},
+            "answer": {"images": images},
             "confirm": True
         }
         

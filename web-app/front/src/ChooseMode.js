@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { updateMode } from './redux/profileSlice';
+
 
 const Button = styled.button`
   background: #d9d9d9;
@@ -47,12 +51,20 @@ const General = styled.div`
 `;
 
 export default function ChooseMode() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+
+  function setMode(mode) {
+    navigate("/question");
+    dispatch(updateMode(mode));
+  }
+
   return (
     <>
       <General>
         <Title>Choose the mode</Title>
-        <Button type="button">Try to guess</Button>
-        <Button type="button">Computer tries to guess</Button>
+        <Button type="button" onClick={()=> setMode(0)}>Try to guess</Button>
+        <Button type="button" onClick={()=> setMode(1)}>Computer tries to guess</Button>
         <Paragraph>Precisions on the different modes :</Paragraph>
         <List>
           <li>
