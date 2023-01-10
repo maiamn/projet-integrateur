@@ -5,10 +5,9 @@ import APIService from './APIService';
 import styled from 'styled-components';
 import { TextField } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { updateName } from './redux/profileSlice';
+import { useDispatch } from 'react-redux'
+import { update } from './redux/profileSlice'
 import { withRouter} from "react-router-dom";
-import { updateName } from './redux/profileSlice';
 
 
 const Title = styled.h1`
@@ -93,7 +92,7 @@ function MainPage() {
 
   function test() {
     navigate("/mode");
-    dispatch(updateName(name));
+    dispatch(update(name));
     
   }
 

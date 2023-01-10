@@ -45,7 +45,7 @@ export default function RightTab() {
   const [isActive, setIsActive] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [time, setTime] = useState(0);
-  const name = useSelector(state => state.profile.name)
+  const name = useSelector(state => state.profile.value)
   const navigate = useNavigate();
 
 

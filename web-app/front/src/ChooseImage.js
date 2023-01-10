@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import ImportImages from "./components/Upload/ImportImages";
 import APIService from "./APIService";
 import { getAccordionDetailsUtilityClass } from "@mui/material";
 
@@ -112,10 +113,13 @@ export default function ChooseImage() {
         </Button>
         <Button
           type="button"
-          onClick={send_images}
+          /* onClick={() => {
+            navigate("/mode");
+          }} */
         >
           Upload from computer
         </Button>
+        <ImportImages></ImportImages>
       </General>
     </>
   );

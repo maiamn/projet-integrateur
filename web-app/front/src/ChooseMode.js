@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { updateMode } from './redux/profileSlice';
 
 
 const Button = styled.button`
@@ -56,7 +55,6 @@ export default function ChooseMode() {
 
   function setMode(mode) {
     navigate("/question");
-    dispatch(updateMode(mode));
   }
 
   return (

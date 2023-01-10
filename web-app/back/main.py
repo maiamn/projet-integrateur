@@ -70,6 +70,22 @@ def test_DB():
         print(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8'))
     return jsonify({"data": base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')})
       
+@app.route("/add", methods=["POST"])
+def add_images():
+    infos = request.files
+    print(infos)
+    # CouchDB
+    couch = couchdb.Server("http://user:user@localhost:5984")
+    db = couch['images']
+
+    for file in infos.keys() :
+        doc = {'labels': "To add"}
+        db.save(doc)
+        f = infos[file].read()
+        db.put_attachment(doc=doc, content=f, filename="image", content_type="image/jpg")
+
+    return jsonify({"image": "coucou"})
+    
 # Running app
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
