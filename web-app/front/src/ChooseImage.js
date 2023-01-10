@@ -113,9 +113,7 @@ export default function ChooseImage() {
         </Button>
         <Button
           type="button"
-          /* onClick={() => {
-            navigate("/mode");
-          }} */
+           onClick={send_images} 
         >
           Upload from computer
         </Button>
