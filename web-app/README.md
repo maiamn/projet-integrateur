@@ -1,4 +1,5 @@
 Pour lancer la web app : 
+
 0) Installer Python si nécessaire et l’ajouter au path + redémarrer l’ordi 
    Vérifier avec python --version
 1) Installer NodeJs avec pip install nodejs
