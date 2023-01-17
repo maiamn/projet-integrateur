@@ -40,7 +40,7 @@ const Buttons = styled.div`
 
 
 
-export default function RightTab() {
+export default function RightTab(props) {
 
   const [isActive, setIsActive] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
@@ -79,6 +79,8 @@ export default function RightTab() {
     setTime(0);
   };
 
+  //console.log(props.questions)
+
     return(
         <>
             <Wrapper>
@@ -94,6 +96,16 @@ export default function RightTab() {
                       {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
                     </span>
                   </div>
+                  <p>Last questions</p>
+                  {Object.keys(props.questions).map((key, i) => 
+                  
+                  (props.questions[key]===true && <p key={i+1}>{key} : YES</p>) ||
+                  (props.questions[key]===false && <p key={i+1}>{key} : NO</p>)
+                  ||
+                  (props.questions[key]==="" && <p key={i+1}>{key} : </p>)
+                  
+                  )}
+
                   <Buttons>
                     <Button onClick={() => navigate("/")}>Home</Button>
                     <Button>Abort</Button>

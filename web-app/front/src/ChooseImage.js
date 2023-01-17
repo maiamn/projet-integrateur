@@ -54,6 +54,10 @@ export default function ChooseImage() {
       //on récupère le message reçu
       setMessageRecu(result)
 
+      if (result['title']==="AnswerSrv" ||result['confirm']===true || result['id_partie']===message_envoye['id_partie'] && result['user']===message_envoye['user']){
+        setAckUpload(true)
+      }
+
       }))
     .catch(error => console.log(error))
   }
@@ -65,10 +69,14 @@ export default function ChooseImage() {
     if (message_envoye!=="" && message_envoye['title']==='get_labels' && reponse['title']==="ConfirmSrv" && reponse['user']===message_envoye['user'] && reponse['id_partie']===message_envoye['id_partie'] && (message_recu['title']!=="AnswerSrv" ||message_recu['confirm']!==true || message_recu['id_partie']!==message_envoye['id_partie'] ||message_recu['user']!==message_envoye['user'])){
       console.log("Get data again")
       getData()
+    }else if (ack_upload)
+    {
+      navigate("/mode")
     }
     
   });
   
+  const [ack_upload,setAckUpload] = useState(false)
   const [message_recu, setMessageRecu] = useState("");
   const [message_envoye, setMessageEnvoye] = useState("");
   const [reponse, setReponse] = useState("");

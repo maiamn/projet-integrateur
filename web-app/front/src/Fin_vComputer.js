@@ -56,7 +56,7 @@ const Title = styled.h1`
   margin-bottom: 0;
 `;
 
-export default function Question_vPlayer() {
+export default function Fin_vComputer() {
 
     const [imageList, setImageList] = useState()
 

@@ -54,7 +54,13 @@ export default function ChooseMode() {
   const navigate = useNavigate();
 
   function setMode(mode) {
-    navigate("/question");
+    if (mode===0){
+      localStorage.setItem("mode", "0")
+      navigate("/show_images");
+    }else{
+      localStorage.setItem("mode", "1")
+      navigate("/jeu_computer");
+    }
   }
 
   return (

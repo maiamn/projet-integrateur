@@ -10,6 +10,12 @@ import MainPage from "./MainPage"
 import ChooseImage from "./ChooseImage"
 import Question_vPlayer from "./Question_vPlayer";
 import ChooseMode from "./ChooseMode";
+import Question_vComputer from './Question_vComputer';
+import Show_Images from './Show_Images';
+import Fin_vPlayer from './Fin_vPlayer';
+import Fin_vComputer from './Fin_vComputer';
+import Jeu_vPlayer from './Jeu_vPlayer';
+import Jeu_vComputer from './Jeu_vComputer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +25,13 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/image" element={<ChooseImage />}/>
-        <Route path="/question" element={<Question_vPlayer />}/>
+        <Route path="/question_player" element={<Question_vPlayer />}/>
+        <Route path="/question_computer" element={<Question_vComputer />}/>
+        <Route path="/show_images" element={<Show_Images />}/>
+        <Route path="/fin_player" element={<Fin_vPlayer />}/>
+        <Route path="/fin_computer" element={<Fin_vComputer />}/>
+        <Route path="/jeu_player" element={<Jeu_vPlayer/>}/>
+        <Route path="/jeu_computer" element={<Jeu_vComputer/>}/>
         <Route path="/" element={<MainPage />}/>
         <Route path="/mode" element={<ChooseMode />} />
       </Routes>

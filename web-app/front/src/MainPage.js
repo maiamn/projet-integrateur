@@ -91,7 +91,7 @@ function MainPage() {
   console.log(message_envoye)
 
   function test() {
-    navigate("/mode");
+    navigate("/image");
     dispatch(update(name));
     
   }
