@@ -14,7 +14,13 @@ app.secret_key = "123"
 cors.init_app(app)
 
 
-  
+
+@app.route('/get_question_to_ask', methods=["GET"])
+def get_question_to_ask() : 
+    print("bonjour")
+
+
+
 @app.route('/', methods=["GET"])
 def getQuestionToAsk():
     questiondecision.init() #à appeler une seule fois au début
@@ -28,4 +34,4 @@ def getAnswerQuestion():
      
 # Running app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=7001)
