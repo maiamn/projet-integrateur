@@ -4,6 +4,7 @@ from flask_cors import CORS
 import couchdb
 import base64
 import random
+import io
   
 # Initializing flask app
 app = Flask(__name__)
@@ -13,47 +14,19 @@ cors.init_app(app)
 
 
 # Get images uploadees
-@app.route("/images", methods=["GET"])
-def get_images():
+@app.route("/img/<id>", methods=["GET"])
+def get_images(id):
     try :
-        # Get JSON request
-        req = request.get_json()
-
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
-        db = couch['images']
-        
-        id_images = [
-                "000003.jpg",
-                "000004.jpg",
-                "000002.jpg"
-        ]
+        db = couch['user']
 
-        images_data = []
-        for id in id_images:
-            images_data.append(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8'))
+        db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()
 
-
-        response = {
-            "title": "AnswerSrV",
-            "user": req['user'],
-            "id_partie": req['id_partie'],
-            "answer": {"images": [images]},
-            "confirm": True
-        }
-
-    except Exception as e:
-        response = {
-            "title": "AnswerSrV",
-            "user": req['user'],
-            "id_partie": req['id_partie'],
-            "answer": {"images": []},
-            "confirm": False,
-            "error": repr(e)
-        }
-
-    finally :
-        return jsonify(response)
+    return send_file(
+        io.BytesIO(image),
+        mimetype='image/jpeg',
+        download_name=id)
 
 
 # Upload Images
@@ -61,24 +34,27 @@ def get_images():
 @app.route("/upload", methods=["POST"])
 def upload_images():
     try :
-        # Get JSON request
-        req = request.get_json()
+        infos = request.files
+        print(infos)
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['user']
+
+        for file in infos.keys() :
+            doc = {'labels': "To add"}
+            db.save(doc)
+            f = infos[file].read()
+            db.put_attachment(doc=doc, content=f, filename="image", content_type="image/jpg")
 
 
         response = {
             "title": "ConfirmSrV",
-            "user": req['user'],
-            "id_partie": req['id_partie'],
-            "images": req['images'],
             "confirm": True
         }
     
     except Exception as e:
         response = {
             "title": "AnswerSrV",
-            "user": req['user'],
-            "id_partie": req['id_partie'],
-            "images": req['images'],
             "confirm": False,
             "error": repr(e)
         }
@@ -96,10 +72,10 @@ def delete_images():
 
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
-        db = couch['images']
+        db = couch['user']
 
         id_images = [
-                "test"
+            "test"
         ]
 
         for id in id_images:
