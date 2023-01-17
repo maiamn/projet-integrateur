@@ -100,22 +100,19 @@ export default function Question_vPlayer() {
         
     }, []);
     
-        
-    console.log(selectedList)
     return(
     <Wrapper>
         <ImageWrapper>
-            {mode == 0 ? <Title>select the pictures to delete</Title> : <Title>select the picture to guess</Title>}
-            <ImageGrid>
+            {mode == 0 ? <Title>select the pictures to delete</Title> : <Title>select the picture to guess</Title>}             <ImageGrid>
                 {imageList && imageList.map((image, index) => {
                     return(  
                         <>
-                            <PersonImage onClick={() => toggleSelected(index)} src={`data:image/png;base64,${image}`} isSelected={selectedList[index]} alt="logo" />
+                            <PersonImage onClick={() => toggleSelected(index)} src={`http://localhost:5000/img/${image}`} isSelected={selectedList[index]} alt={image} />
                         </>
                     )
                     })
                 }
-            </ImageGrid>
+            </ImageGrid> 
         </ImageWrapper>
         <TabWrapper>
             <RightTab></RightTab>

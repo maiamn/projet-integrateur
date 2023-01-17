@@ -8,17 +8,17 @@ import couchdb
 import pandas as pd
 import numpy as np
 
-# path where images are stored
-path = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\images_test'
-files_list = os.listdir(path)
+# # path where images are stored
+# path = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\images_test'
+# files_list = os.listdir(path)
 
-# path where labels are stored
-path_labels = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\img_attributes.csv'
-data = pd.read_csv(path_labels, index_col=0)
-npdata = data.to_numpy()
+# # path where labels are stored
+# path_labels = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\img_attributes.csv'
+# data = pd.read_csv(path_labels, index_col=0)
+# npdata = data.to_numpy()
 
 # connection to CouchDB
-couch = couchdb.Server("http://admin:user@192.168.37.73:5984") # http://login:password@localhost:5984
+couch = couchdb.Server("http://admin:user@192.168.37.73:50002") # http://login:password@localhost:5984
 couch.create("test")
 # db = couch['images'] # images = name of the database
 
