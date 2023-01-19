@@ -6,6 +6,8 @@ import base64
 import random
 import io
 import json
+import logging
+import traceback
   
 # Initializing flask app
 app = Flask(__name__)
@@ -13,11 +15,24 @@ cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.DEBUG)
+
+labels_name = ['5_o_Clock_Shadow', 'Bags_Under_Eyes', 'Bald', 'Bangs', 'Big_Lips',
+ 'Big_Nose', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Bushy_Eyebrows',
+ 'Chubby', 'Eyeglasses', 'Goatee', 'Gray_Hair', 'Heavy_Makeup',
+ 'High_Cheekbones', 'Male', 'Mouth_Slightly_Open', 'Mustache', 'No_Beard',
+ 'Oval_Face', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline', 'Rosy_Cheeks',
+ 'Sideburns', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Earrings',
+ 'Wearing_Hat', 'Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie',
+ 'Young'
+]
 
 # Get images uploadees
 @app.route("/img/<id>", methods=["GET"])
 def get_images(id):
-    
+
     # CouchDB
     couch = couchdb.Server("http://user:user@localhost:5984")
     db = couch['user']
@@ -31,47 +46,35 @@ def get_images(id):
 
 
 # Upload Images
-## TO DO !
 @app.route("/upload", methods=["POST"])
 def upload_images():
+
+    logging.info('upload route')
+
     try :
-        print(request.headers.items)
-        #print('data',json.loads(request.data))
-        print('data',request.data)
-        #print('json',request.json)
         infos = request.files
         content = request.form
-        labels = {}
-        print("infos",infos)
 
-        print("content",content)
-        print("labels",labels)
+        logging.debug("infos %s",infos)
+        logging.debug("content %s",content)
+
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
-        print("b")
         db = couch['user']
-        print("a")
-        print("keys",content.keys())
-        #print("file content",content['file'])
 
-        # for k in content.keys(): 
-        #     if k in infps:
-        #         lab = content[k]
-    
-        # print("lab",lab)
-
+        #Recup les images et les labels pour chacunes
         for file in infos.keys():
-            print(content[file])
-            lab = list(content[file].split(" "))
-            lab = [int(e) for e in lab]
-            print(lab)
-            doc = {'labels': lab}
-            db.save(doc)
-            print(file)
-            print(infos[file])
-            f = infos[file].read()
-            db.put_attachment(doc=doc, content=f, filename="image", content_type="image/jpg")
+            labels = [int(e) for e in list(content[file].split(" "))]
+            labels_dic = {labels_name[i]:labels[i] for i in range(len(labels))}
+            logging.debug('labels %s',labels_dic)
 
+            doc = {'labels': labels_dic}
+            db.save(doc)
+
+            logging.debug('debugs %s : %s',file,infos[file])
+            f = infos[file].read()
+
+            db.put_attachment(doc=doc, content=f, filename="image", content_type="image/jpg")
 
         response = {
             "title": "ConfirmSrV",
@@ -79,27 +82,35 @@ def upload_images():
         }
     
     except Exception as e:
+        logging.error(traceback.format_exc())
         response = {
-            "title": "AnswerSrV",
+            "title": "ConfirmSrV",
             "confirm": False,
             "error": repr(e)
         }
         
     finally :
+
         return jsonify(response)
 
 
 # Delete Images associated with a party
 @app.route("/delete", methods=["DELETE"])
 def delete_images():
+
+    logging.info("delete")
+
     try :
         # Get JSON request
         req = request.get_json()
+
+        logging.debug("req %s",req)
 
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
         db = couch['user']
 
+        #TO DO : mettre les ids des images
         id_images = [
             "test"
         ]
@@ -120,7 +131,7 @@ def delete_images():
 
     
     except Exception as e:
-        print(e)
+        logging.error(traceback.format_exc())
         response = {
             "title": "AnswerSrV",
             "user": req['user'],

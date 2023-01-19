@@ -1,5 +1,5 @@
 # Import flask and datetime module for showing date and time
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import base64
 import traceback
@@ -21,69 +21,35 @@ cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
 
-sess = {}
-
 #Route pour vérifier que le microservice est bien lancé
 @app.route("/", methods=["GET"])
 def defaultRoute():
     return jsonify("gestCNN OK on port 7000")
 
-# @app.route("/send_pic", methods=["POST"])
-# def send_pic():
-#     global sess
-
-#     message = request.get_json()
-#     #On enregistre le message pour pouvoir le récupérer dans get_labels
-#     sess['message']=message
-#     print("sess_send", sess)
-
-#     return jsonify(message)
-
 @app.route("/get_labels", methods=["POST"])
 def get_labels():
-    global sess
 
     infos = request.files
     message = request.form
 
-    print("infos",infos)
+    logging.debug("files %s",infos)
+    logging.debug("message %s",message)
 
-    print("message",message)
+    answer = {}
 
-    answer = {"message":"session is empty"}
+    if message["title"]=="get_labels" :
+        try :
+            df = predicted('../../Notebook/saved_model/cp.h5',infos)
+            labels_list = df.values.tolist()
 
-    print("sess_answer", sess)
+            answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':labels_list}, 'confirm':True}
 
-    #message = request.get_json()
-    #On enregistre le message pour pouvoir le récupérer dans get_labels
-    sess['message']=message
-
-
-    if "message" in sess :
-
-        message = sess['message']
-        print(message)
-
-        if message["title"]=="get_labels" :
-            try :
-                df = get_labels_images(infos)
-                labels_list = df.values.tolist()
-
-                answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':labels_list}, 'confirm':True}
-
-            except Exception as e :
-                logging.error("pb recup images %s",e.__cause__)
-                logging.error(traceback.format_exc())
-                answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':None}, 'confirm':False,'error':repr(e)}
+        except Exception as e :
+            logging.error("pb recup images %s",e.__cause__)
+            logging.error(traceback.format_exc())
+            answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':None}, 'confirm':False,'error':repr(e)}
 
     return jsonify(answer)
-      
-def get_labels_images(images) :
-    #au lieu d'utiliser le path des images on fait appel au microservice pour récupérer le dossier des images 
-    #path à adapter en fonction de l'emplacement
-    df = predicted('C:/Users/Elise/Documents/5SDBD/projet-integrateur/Notebook/saved_model/cp.h5',images)
-    
-    return df
 
 # Running app
 if __name__ == '__main__':

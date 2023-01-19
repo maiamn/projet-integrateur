@@ -20,7 +20,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 
 selectedImage = ""
-images_left = 5
+#images_left = 5
 
 
 #Route pour vérifier que le microservice est bien lancé
@@ -53,48 +53,38 @@ def test_receive():
 
                 try :
                     #Envoie les images uploadées au cnn
-                    payload = { 'title' : 'get_labels', 'user' : message['user'], 'id_partie' : message['id_partie']}
-                    files = []
-                    k = list(infos.keys())
-                    print(k)
-                    for file in range(len(k)) :
-                        print(infos[k[file]])
-                        files.append((k[file] ,(k[file]+'.jpg', infos[k[file]].read(),'image/jpeg')))
+                    payload_cnn = { 'title' : 'get_labels', 'user' : message['user'], 'id_partie' : message['id_partie']}
+                    files_cnn = []
+                    k_cnn = list(infos.keys())
 
-                    #res = requests.post('http://localhost:7000/get_labels', json={ 'title' : 'get_labels', 'user' : message['user'], 'id_partie' : message['id_partie'], 'images':'C:/Users/fifid/Pictures/test'}, timeout=20).json()
-                    res = requests.post('http://localhost:7000/get_labels', headers={}, data=payload, files=files, timeout=20).json()
+                    for file in range(len(k_cnn)) :
+                        logging.debug("file_cnn %s",infos[k_cnn[file]])
+                        files_cnn.append((k_cnn[file] ,(k_cnn[file]+'.jpg', infos[k_cnn[file]].read(),'image/jpeg')))
+
+                    res = requests.post('http://localhost:7000/get_labels', data=payload_cnn, files=files_cnn, timeout=20).json()
                     logging.debug("message from gestCNN: %s" ,res)
 
                     
-                    value = []
-                    payload = {'title' : 'get_labels','hey':'he'}
+                    #Mise en forme des labels des images récupérées du CNN
+                    name_images = []
+                    payload = { 'title' : 'get_labels', 'user' : message['user'], 'id_partie' : message['id_partie']}
+
+                    logging.debug('labels %s', res['answer']['labels'])
                     for i in res['answer']['labels'] :
-                        value.append(list(i[0].split("."))[0])
+                        name_images.append(list(i[0].split("."))[0])
                         payload[list(i[0].split("."))[0]] = ' '.join(str(e) for e in i[1:])
                     
-
-                    headers = {}
-                    print(payload)
-                    files = []
-                    k = list(infos.keys())
-                    l = value
-                    print(k)
-                    print(l)
-                    for file in range(len(k)) :
-                        print(l)
-                        print(l[file])
-                        print(infos[k[file]])
-                        files.append((l[file] ,(l[file]+'.jpg', infos[k[file]].read(),'image/jpeg')))
+                    logging.debug("payload %s",payload)
 
                     
-
-                    res_upload = requests.post('http://localhost:8000/upload', headers=headers, data=payload, files=files, timeout=20).json()
+                    res_upload = requests.post('http://localhost:8000/upload', data=payload, files=files_cnn, timeout=20).json()
                     logging.debug("message from upload: %s" ,res_upload)
+
                     question = {'title':"ConfirmSrv", 'user' : res['user'], 'id_partie' : res['id_partie'], 'confirm':True}
                         
                 except Exception as e :
                     logging.error(traceback.format_exc())
-                    question = {'title':"ConfirmSrv", 'confirm':False,'error':repr(e)}
+                    question = {'title':"ConfirmSrv", 'user' : message['user'], 'id_partie' : message['id_partie'], 'confirm':False,'error':repr(e)}
 
         else :
             message = request.get_json()['message']
@@ -102,51 +92,50 @@ def test_receive():
             
             logging.debug("message from interface %s",message)
 
-            if title=="get_n_celeb_images" :
-                logging.info("get_n_celeb_images")
+            if title=="get_images" :
+                logging.info("get_images")
 
                 try :
-                    #Recup les images du jeu
+                    #TO DO : Recup les images du jeu ou de la partie ? 
                     res = requests.post('http://localhost:9000/celebs', json={ "title": "get_n_celeb_images","user": 3,"id_partie": 4,"nb_images": 20}, timeout=20).json()
-                    logging.debug("message from BDDdefault: %s" ,res)
+                    ##logging.debug("message from BDDdefault: %s" ,res)
 
-                    if message['questions']==True : 
-                        #Si on veut recuperer les questions aussi 
-                        logging.info("images + questions")
-                        # a modifier en récuperant les questions 
-                        questions_ask = ["Are they a Male ?", "Do they have brown hair?", "Do they have a beard ?"]
+                    
+                    questions_ask = requests.get('http://localhost:7001/get_possible_question', timeout=20).json()
 
-                        question = {
-                            "title": "AnswerSrV",
-                            "user": res['user'],
-                            "id_partie": res['id_partie'],
-                            "nb_images": res['nb_images'],
-                            "answer": {"images": res['answer']['images'], "questions":questions_ask},
-                            "confirm": True
-                        }
-                    else :
-
-                        #Si on recupère que les photos
-                        logging.info("images only")
-
-                        question = {
-                            "title": "AnswerSrV",
-                            "user": res['user'],
-                            "id_partie": res['id_partie'],
-                            "nb_images": res['nb_images'],
-                            "answer": {"images": res['answer']['images']},
-                            "confirm": True
-                        }
+                    question = {
+                        "title": "AnswerSrV",
+                        "user": res['user'],
+                        "id_partie": res['id_partie'],
+                        "nb_images": res['nb_images'],
+                        "answer": {"images": res['answer']['images'], "questions":questions_ask['questions']},
+                        "confirm": True
+                    }
+                    
                         
                 except Exception as e :
                     logging.error(traceback.format_exc())
                     question = res
 
+            elif title=="get_questions" :
+                logging.info("get_questions")
+
+                questions_ask = requests.get('http://localhost:7001/get_possible_question', timeout=20).json()
+
+                question = {
+                    "title": "AnswerSrV",
+                    "user": message['user'],
+                    "id_partie": message['id_partie'],
+                    "answer": {"questions":questions_ask['questions']},
+                    "confirm": True
+                }
+
             elif title=="get_answer_computer" :
                 logging.info("get_answer_computer")
 
                 try : 
-                    #Recup la réponse à la question du user
+                    logging.debug("asked question on %s",message['question'])
+                    #TO DO : Recup la réponse à la question du user
                     answer = True
 
                     question = {
@@ -209,24 +198,27 @@ def test_receive():
                             'confirm' : False
                             }
 
-            # elif title=="add_image_to_guess" :
-            #     selectedImage = ""
-            #     print(message['image_to_guess'])
-            #     selectedImage = message['image_to_guess']
-            #     question = {
-            #         'title' : 'ConfirmSrV',
-            #         'user' : message['user'],
-            #         'id_partie' : message['id_partie'],
-            #         'image_to_guess' : message['image_to_guess'],
-            #         'confirm' : True,
-            #     }
-
             elif title=="get_question_to_ask" :
                 logging.info("get_question_to_ask")
 
                 try : 
                     #TO DO : recup la question du computer et enlever le images_left et les 2 messages différents qui vont être renvoyés par le micro service
-                    question_to_ask = "Are they a Male ?"
+                    rep = requests.get('http://localhost:9000/labels', timeout=20).json()
+                    
+                    labels = rep['labels']
+
+                    images_left = rep['nb_images']
+                    
+
+
+                    logging.debug("labels de bdd default %s",labels)
+
+                    print(labels.keys())
+                    print(labels)
+                    print("excluded",message['excluded'])
+                    question_to_ask = requests.post('http://localhost:7001/get_question_to_ask', json={"images":{"labels":{i:labels[i] for i in labels.keys()}}, "excluded":message['excluded']}, timeout=20).json()
+                    
+                    logging.debug("message from ms-question: %s" ,question_to_ask)
                     
                     logging.debug("images left %s",images_left)
 
@@ -244,17 +236,17 @@ def test_receive():
                                     },
                             'confirm' : True
                         }
-                        images_left=5
+                        #images_left=5
                     else : 
                         logging.debug("Still asking")
 
-                        images_left-=1
+                        #images_left-=1
                         question = {
                             'title' : 'AnswerSrV',
                             'user' : message['user'],
                             'id_partie' : message['id_partie'],
                             'answer' : {
-                                        'question_to_ask': question_to_ask,
+                                        'question_to_ask': question_to_ask["question"],
                                         'images_left' : images_left
 
                                     },
@@ -277,6 +269,7 @@ def test_receive():
 
                 try : 
                     #TO DO : Process la réponse du user
+                    res = requests.post('http://localhost:9000/delete', json={'answer_user': message['answer_user'], 'question':message['question']}, timeout=20).json()
 
                     question = {
                         
@@ -284,6 +277,7 @@ def test_receive():
                         'user' : message['user'],
                         'id_partie' : message['id_partie'],
                         'answer_user': message['answer_user'],
+                        'question':message['question'],
                         'confirm' : True
                     }
                 except Exception as e :
@@ -293,6 +287,7 @@ def test_receive():
                             'user' : message['user'],
                             'id_partie' : message['id_partie'],
                             'answer_user': message['answer_user'],
+                            'question':message['question'],
                             "error" : repr(e),  
                             'confirm' : False
                             }
@@ -308,22 +303,22 @@ def test_receive():
         
     return jsonify(question)
 
-#Labelliser les nouvelles images entrées par le user
-@app.route('/get_labels', methods=["GET"])
-def get_labels():
-    logging.info("get_labels route")
+# #Labelliser les nouvelles images entrées par le user
+# @app.route('/get_labels', methods=["GET"])
+# def get_labels():
+#     logging.info("get_labels route")
 
-    res = {}
-    try :
-        res = requests.get('http://localhost:7000/get_labels').json()
-        print(res)
-        logging.debug("message from gestCNN : %s" ,res)   
-    except Exception as e :
-        res = {'title':'AnswerSrv','confirm':False,'error':repr(e)}
-        logging.error(traceback.format_exc())
+#     res = {}
+#     try :
+#         res = requests.get('http://localhost:7000/get_labels').json()
+#         print(res)
+#         logging.debug("message from gestCNN : %s" ,res)   
+#     except Exception as e :
+#         res = {'title':'AnswerSrv','confirm':False,'error':repr(e)}
+#         logging.error(traceback.format_exc())
 
-    #on renvoie directement le message renvoyé par gestCNN
-    return jsonify(res)
+#     #on renvoie directement le message renvoyé par gestCNN
+#     return jsonify(res)
 
 
 

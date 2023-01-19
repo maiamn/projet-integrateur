@@ -1,16 +1,9 @@
-import logo from './logo.png';
-import celebrity from './000002.jpg';
 import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
-import { ImageList } from '@mui/material';
-import { useSelector } from 'react-redux';
-import Popup from 'reactjs-popup';
-import { Button} from 'react-bootstrap';
 import Select from 'react-select';
 import APIService from './APIService';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const PersonImage = styled.img`
@@ -66,149 +59,144 @@ const Title = styled.h1`
 
 export default function Show_Images() {
 
-    const [imageList, setImageList] = useState()
+    const localImages = JSON.parse(localStorage.getItem('imageList'))
+    const [imageList, setImageList] = useState(localImages ? localImages : undefined)
 
     const localList = JSON.parse(localStorage.getItem('selectedList'))
-    console.log(localStorage.getItem('selectedList'))
-    const [selectedList, setSelectedList] = useState(localList ? localList : Array(20).fill(false))
+    const selectedList = localList ? localList : Array(20).fill(false)
 
-    var current_questions = JSON.parse(localStorage.getItem('currentQuestions'))  ? JSON.parse(localStorage.getItem('currentQuestions'))  : {}
+    const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
 
-    const mode = useSelector(state => state.profile.mode)
 
-    const [to_open,setOpen]=useState(false)
+    const options_questions = JSON.parse(localStorage.getItem('options_question'))
+    const [options, setOptions] = useState(options_questions ? options_questions : [{ value: 'No questions', label: 'No questions' }])
+    const [optionOk, setOk] = useState(options_questions ? true : false)
 
-    const toggleSelected=(id)=>{
-        setSelectedList(() => 
-            selectedList.map((image, index) => {
-            if(index == id) {
-                image = !image
-            }
-            return image;
-            })
-        );
-    }
+    const [to_open, setOpen] = useState(options_questions ? true : false)
 
-    const [ack_upload,setAckUpload] = useState(false)
-    const [message_recu, setMessageRecu] = useState("");
-    const [message_envoye, setMessageEnvoye] = useState("");
-    const [reponse, setReponse] = useState("");
-  
-    //A CHANGER AVEC LES LOCALS STORAGE
-    const id_user = 8;
-    const id_partie = 9;
+    const id_user = localStorage.getItem('id_user')
+    const id_partie = localStorage.getItem(id_user)
+
     const navigate = useNavigate();
-    
+
+
     //fonction pour envoyer un message au dispatcher
-    const sendData = (message) =>{
-      APIService.sendToServer({message})
-      .then(response => {
-        setReponse(response); 
-        setAnswer(response.answer.answer_computer); 
-        localStorage.setItem('selectedList',JSON.stringify(selectedList));
-        let question_here = response['question']
-        current_questions[question_here] = response.answer.answer_computer;
-        console.log(current_questions)
-        localStorage.setItem('currentQuestions',JSON.stringify(current_questions));
-        localStorage.setItem('imageList',JSON.stringify(imageList));
-        navigate('/jeu_player')})
-      .catch(error => console.log('error',error))
+    const sendData = (message) => {
+        APIService.sendToServer({ message })
+            .then(response => {
+
+                localStorage.setItem('selectedList', JSON.stringify(selectedList));
+
+                let question_here = response['question']
+                current_questions[question_here] = response.answer.answer_computer;
+                localStorage.setItem('currentQuestions', JSON.stringify(current_questions));
+
+                navigate('/jeu_player')
+            })
+
+            .catch(error => console.log('error', error))
     }
 
-    const send_answer=(e)=>{
-        console.log(e)
+    const send_answer = (e) => {
         let message = {
-            'title' : 'get_answer_computer',
-            'user' : id_user,
-            'id_partie' : id_partie,
-            'question' : e.value
+            'title': 'get_answer_computer',
+            'user': id_user,
+            'id_partie': id_partie,
+            'question': e.value
         }
-        setMessageEnvoye(message)
+
         sendData(message)
     }
 
-    const getImages=()=>{
-        fetch('http://localhost:5000/sent',{
-        credentials: "include",
-        method :'POST',
-        headers : {
-            'Content-Type':'application/json'
-        },
-        body: JSON.stringify({ 
-            "message" : {
-            "title": "get_n_celeb_images",
-            "questions" : true,
-            "user": 3,
-            "id_partie": 4,
-            "nb_images": 20
-            }
-        }),
+    const getImages = (message) => {
+        fetch('http://localhost:5000/sent', {
+            credentials: "include",
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message),
         })
-        .then(response => response.json().then(function(result){
-            console.log(result.answer.images)
-            let dic_images = {}
-            result.answer.images.map((image, index) => {
-                dic_images[index]=image
-            })
-            setImageList(JSON.parse(localStorage.getItem('imageList')) ? JSON.parse(localStorage.getItem('imageList')) : dic_images)
-            let list = []
-            console.log(result.answer.questions)
-            result.answer.questions.map((i)=>{
-                console.log(i)
-                list = list.concat({value:i,label:i})
-            })
-            setOptions(list)
-            setOpen(true)
-        }))
-        .catch(error => console.log(error))
+            .then(response => response.json().then(function (result) {
+                if ("images" in result.answer) {
+                    console.log("images", result.answer.images)
+                    let dic_images = {}
+                    result.answer.images.map((image, index) => {
+                        dic_images[index] = image
+                    })
+                    setImageList(dic_images)
+                    localStorage.setItem('imageList', JSON.stringify(dic_images));
+                }
+
+                let list = []
+                console.log("questions", result.answer.questions)
+                Object.entries(result.answer.questions).map(([index, question]) => {
+                    list = list.concat({ value: index, label: question })
+                })
+                localStorage.setItem('options_question', JSON.stringify(list))
+                setOptions(list)
+                setOk(true)
+                setOpen(true)
+            }))
+            .catch(error => console.log(error))
     }
 
-    //useEffect(() => {
-      //}, [ImageList]);
-
     useEffect(() => {
-        console.log("list",imageList)
-        if (imageList===undefined && !to_open){
-            getImages()
+        if ((imageList === undefined || !optionOk) && !to_open) {
+            if (imageList === undefined) {
+                let message = {
+                    "message": {
+                        "title": "get_images",
+                        "questions": true,
+                        "user": id_user,
+                        "id_partie": id_partie,
+                        "nb_images": 20
+                    }
+                }
+                getImages(message)
+            } else {
+                let message = {
+                    "message": {
+                        "title": "get_questions",
+                        "user": id_user,
+                        "id_partie": id_partie
+                    }
+                }
+                getImages(message)
+            }
+
         }
     },);
 
-    const [options,setOptions] = useState([{ value: 'No questions', label: 'No questions' }])
-    const [answer,setAnswer]=useState('')
-        
-    console.log(selectedList)
-    console.log(reponse)
-    console.log(answer)
-    console.log("imageList",imageList)
-    return(
-        <div>
-    <Wrapper>
-        <ImageWrapper>
-            {<Title>Ask a question</Title>}
-            {to_open && <Select options={options} onChange={(e)=>send_answer(e)}/>}
-       
-            <ImageGrid>
-                {imageList && Object.entries(imageList).map(([index, image]) => {
-                        return(  
-                                !selectedList[index]&& 
-                                    <>
-                                        <PersonImage /*onClick={() => toggleSelected(index)}*/ src={`data:image/png;base64,${image}`} isSelected={selectedList[index]} alt="logo" />
-                                    </>
-                            )
-                    
-                    })
-                }
-            </ImageGrid>
 
-            
-        </ImageWrapper>
-        
-        <TabWrapper>
-            <RightTab questions={current_questions} ></RightTab>
-        </TabWrapper>
-        
-    </Wrapper>
-    
-    </div>
+    return (
+        <Wrapper>
+            <ImageWrapper>
+                {<Title>Ask a question</Title>}
+                {to_open && <Select options={options} onChange={(e) => send_answer(e)} />}
+
+                <ImageGrid>
+                    {imageList && Object.entries(imageList).map(([index, image]) => {
+                        return (
+                            !selectedList[index] &&
+                            <>
+                                <PersonImage src={`data:image/png;base64,${image}`} /*isSelected={selectedList[index]}*/ alt="logo" />
+                            </>
+                        )
+
+                    })
+                    }
+                </ImageGrid>
+
+
+            </ImageWrapper>
+
+            <TabWrapper>
+                <RightTab questions={current_questions} ></RightTab>
+            </TabWrapper>
+
+        </Wrapper>
+
+
     );
 }

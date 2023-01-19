@@ -216,13 +216,14 @@ def get_images_left_df(images_before, label_question, answer):
     label_answer = '1' if answer else '-1'
     return images_before.loc[images_before[label_question] == label_answer].sort_values(by="image_id")
 
-def choose_question(df):
+def choose_question(df,excluded_labels):
     score_min = 2
     label_min = ""
     
     #evaluate all scores + find the best one
     for label in df:
-        if label != 'image_id':
+        print(label)
+        if label != 'image_id' and label not in excluded_labels:
             nb_positive = get_images_left_df(df, label, 1)
             score_rep = abs(len(nb_positive.values.tolist())/len(df.values.tolist())-0.5)+1
             score = score_rep * labels_weights[label]
@@ -247,9 +248,10 @@ def test():
 
 
 ################  Fonctions modifiées pour être utilisées dans le microservices  ########################
-def get_question_to_ask(list_images): 
+def get_question_to_ask(list_images,excluded_labels): 
     df = json_to_dataframe(list_images)
-    label = choose_question(df)
+    print(df)
+    label = choose_question(df,excluded_labels)
     return (questions[label]) 
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
@@ -42,18 +42,19 @@ const Buttons = styled.div`
 
 export default function RightTab(props) {
 
-  const [isActive, setIsActive] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+
   const [time, setTime] = useState(0);
   const name = useSelector(state => state.profile.value)
+
   const navigate = useNavigate();
 
 
 
   React.useEffect(() => {
     let interval = null;
-  
-    if (isActive && isPaused === false) {
+
+    if (isPaused === false) {
       interval = setInterval(() => {
         setTime((time) => time + 10);
       }, 10);
@@ -63,57 +64,58 @@ export default function RightTab(props) {
     return () => {
       clearInterval(interval);
     };
-  }, [isActive, isPaused]);
-  
-  const handleStart = () => {
-    setIsActive(true);
-    setIsPaused(false);
-  };
-  
+  }, [isPaused]);
+
+
+
   const handlePauseResume = () => {
     setIsPaused(!isPaused);
   };
-  
-  const handleReset = () => {
-    setIsActive(false);
-    setTime(0);
+
+  const handleStop = () => {
+    let user = localStorage.getItem('id_user')
+    let partie = localStorage.getItem(user)
+
+    localStorage.clear()
+
+    localStorage.setItem('id_user', user)
+    localStorage.setItem(user, partie)
+    navigate('/')
   };
 
-  //console.log(props.questions)
 
-    return(
-        <>
-            <Wrapper>
-                <Tab> 
-                  <p>Guess Who ?</p>
-                  <p>Player : {name}</p>
-                  <div>
-                  <span>Timer : </span>
-                    <span className="digits">
-                      {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
-                    </span>
-                    <span className="digits">
-                      {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
-                    </span>
-                  </div>
-                  <p>Last questions</p>
-                  {Object.keys(props.questions).map((key, i) => 
-                  
-                  (props.questions[key]===true && <p key={i+1}>{key} : YES</p>) ||
-                  (props.questions[key]===false && <p key={i+1}>{key} : NO</p>)
-                  ||
-                  (props.questions[key]==="" && <p key={i+1}>{key} : </p>)
-                  
-                  )}
+  return (
+    <>
+      <Wrapper>
+        <Tab>
+          <p>Guess Who ?</p>
+          <p>Player : {name}</p>
+          <div>
+            <span>Timer : </span>
+            <span className="digits">
+              {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+            </span>
+            <span className="digits">
+              {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+            </span>
+          </div>
+          <p>Last questions</p>
+          {Object.keys(props.questions).map((key, i) =>
 
-                  <Buttons>
-                    <Button onClick={() => navigate("/")}>Home</Button>
-                    <Button>Abort</Button>
-                    <Button onClick={() => handlePauseResume()}>{isPaused ? "Resume" : "Pause"}</Button>
-                  </Buttons>
-                </Tab>
-                
-            </Wrapper>
-        </>
-    );
+            (props.questions[key] === true && <p key={i + 1}>{key} : YES</p>) ||
+            (props.questions[key] === false && <p key={i + 1}>{key} : NO</p>)
+            ||
+            (props.questions[key] === "" && <p key={i + 1}>{key} : </p>)
+
+          )}
+
+          <Buttons>
+            <Button onClick={() => handleStop()}>Stop</Button>
+            <Button onClick={() => handlePauseResume()}>{isPaused ? "Resume" : "Pause"}</Button>
+          </Buttons>
+        </Tab>
+
+      </Wrapper>
+    </>
+  );
 }
