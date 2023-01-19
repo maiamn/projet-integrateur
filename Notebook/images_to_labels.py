@@ -89,23 +89,21 @@ def resize_images(path):
 # In[31]:
 
 
-def predict_labels(model,path,unique_labels):
+def predict_labels(model,images,unique_labels):
     predictions =  []
     images_path = []
     labels_images = []
     best_labels = []
     seuil_confiance = 40
-
     
     data = {j:[] for j in unique_labels}
     data['image_id']= []
-    print(data)
 
-    for file in os.listdir(path):
-        f_img = path+"/"+file
-
-        #load image
-        my_image = load_img(f_img, target_size=(224, 224))
+    for file in images.keys():
+        img = images[file]
+        print("mon image ", img)
+        my_image = Image.open(img)
+        my_image.resize((224,224))
 
         #preprocess the image
         my_image = img_to_array(my_image)
@@ -137,7 +135,7 @@ def predict_labels(model,path,unique_labels):
     for image in range(len(images_path)):  
         print(images_path[image])
         print("Best labels : ")
-        print(best_labels[image])
+        print(best_labels[image]) 
 
     return data
 
@@ -145,7 +143,7 @@ def predict_labels(model,path,unique_labels):
 # In[29]:
 
 
-def predicted(model_path,data_path):
+def predicted(model_path,images):
     
     unique_labels = ['5_o_Clock_Shadow',
      'Bags_Under_Eyes',
@@ -184,8 +182,7 @@ def predicted(model_path,data_path):
      'Young']
         
     model = get_model(model_path)
-    resize_images(data_path)
-    data = predict_labels(model,data_path,unique_labels)
+    data = predict_labels(model,images,unique_labels)
     
     df = pd.DataFrame(data,
                columns =['image_id']+unique_labels)

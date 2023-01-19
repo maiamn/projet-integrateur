@@ -66,8 +66,7 @@ def get_labels():
 
         if message["title"]=="get_labels" :
             try :
-                images = 'C:/Users/fifid/Pictures/test'
-                df = get_labels_images(images)
+                df = get_labels_images(infos)
                 labels_list = df.values.tolist()
 
                 answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':labels_list}, 'confirm':True}
@@ -82,8 +81,8 @@ def get_labels():
 def get_labels_images(images) :
     #au lieu d'utiliser le path des images on fait appel au microservice pour récupérer le dossier des images 
     #path à adapter en fonction de l'emplacement
-    print(images)
-    df = predicted('C:/Users/fifid/Documents/saved_model_50000/cp.h5',images)
+    df = predicted('C:/Users/Elise/Documents/5SDBD/projet-integrateur/Notebook/saved_model/cp.h5',images)
+    
     return df
 
 # Running app
