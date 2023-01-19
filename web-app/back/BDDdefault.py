@@ -67,12 +67,13 @@ def get_labels():
         # Get JSON request
         req = request.get_json()
 
-        ## for now we don't get the labels associated to the images of a "partie" but the labels associated to the following images 
-        images = [
-                "000003.jpg",
-                "000004.jpg",
-                "000002.jpg"
-        ]
+        
+        #images = [
+        #        "000003.jpg",
+        #        "000004.jpg",
+        #        "000002.jpg"
+        #]
+        images = req['images']
 
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
