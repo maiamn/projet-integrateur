@@ -92,6 +92,16 @@ questions={
     'Oval_Face':"Do they have an oval face?"    
 }
 
+labels = [ 'image_id', '5_o_Clock_Shadow', 'Bags_Under_Eyes', 'Bald', 'Bangs', 'Big_Lips',
+ 'Big_Nose', 'Black_Hair', 'Blond_Hair', 'Brown_Hair', 'Bushy_Eyebrows',
+ 'Chubby', 'Eyeglasses', 'Goatee', 'Gray_Hair', 'Heavy_Makeup',
+ 'High_Cheekbones', 'Male', 'Mouth_Slightly_Open', 'Mustache', 'No_Beard',
+ 'Oval_Face', 'Pale_Skin', 'Pointy_Nose', 'Receding_Hairline', 'Rosy_Cheeks',
+ 'Sideburns', 'Smiling', 'Straight_Hair', 'Wavy_Hair', 'Wearing_Earrings',
+ 'Wearing_Hat', 'Wearing_Lipstick', 'Wearing_Necklace', 'Wearing_Necktie',
+ 'Young'
+]
+
 # Recuperer les données depuis le fichier csv 
 def init_data():
     data = np.genfromtxt(fname, dtype=str, delimiter=",")
@@ -235,10 +245,28 @@ def test():
 
     return label_question
 
-def get_question_to_ask(list_images):
-    df = construct_dataframe_from_jpg_names(list_images)
+
+################  Fonctions modifiées pour être utilisées dans le microservices  ########################
+def get_question_to_ask(list_images): 
+    df = json_to_dataframe(list_images)
     label = choose_question(df)
-    return (label, questions[label]) 
+    return (questions[label]) 
+
+
+def json_to_dataframe(list_images):
+    myDataFrame = pd.DataFrame(columns=labels)
+
+    att_to_crop = ["Attractive","Blurry","Double_Chin", "Arched_Eyebrows", "Narrow_Eyes"]
+
+    for img in list_images['labels'].keys():
+        for i in att_to_crop :
+            if i in list_images['labels'][img].keys():
+                del list_images['labels'][img][i]
+        list_images['labels'][img]["image_id"] = img
+        
+        myDataFrame = myDataFrame.append(list_images['labels'][img], ignore_index=True)
+    return myDataFrame
+##########################################################################################################
 
 if __name__ == '__main__':
     init()
