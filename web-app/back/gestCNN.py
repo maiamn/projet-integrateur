@@ -28,24 +28,35 @@ sess = {}
 def defaultRoute():
     return jsonify("gestCNN OK on port 7000")
 
-@app.route("/send_pic", methods=["POST"])
-def send_pic():
-    global sess
+# @app.route("/send_pic", methods=["POST"])
+# def send_pic():
+#     global sess
 
-    message = request.get_json()
-    #On enregistre le message pour pouvoir le récupérer dans get_labels
-    sess['message']=message
-    print("sess_send", sess)
+#     message = request.get_json()
+#     #On enregistre le message pour pouvoir le récupérer dans get_labels
+#     sess['message']=message
+#     print("sess_send", sess)
 
-    return jsonify(message)
+#     return jsonify(message)
 
-@app.route("/get_labels", methods=["GET"])
+@app.route("/get_labels", methods=["POST"])
 def get_labels():
     global sess
+
+    infos = request.files
+    message = request.form
+
+    print("infos",infos)
+
+    print("message",message)
 
     answer = {"message":"session is empty"}
 
     print("sess_answer", sess)
+
+    #message = request.get_json()
+    #On enregistre le message pour pouvoir le récupérer dans get_labels
+    sess['message']=message
 
 
     if "message" in sess :
@@ -55,7 +66,8 @@ def get_labels():
 
         if message["title"]=="get_labels" :
             try :
-                df = get_labels_images(message['images'])
+                images = 'C:/Users/fifid/Pictures/test'
+                df = get_labels_images(images)
                 labels_list = df.values.tolist()
 
                 answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':labels_list}, 'confirm':True}

@@ -62,9 +62,9 @@ const Title = styled.h1`
 
 export default function Question_vComputer() {
 
-    const localImage = JSON.parse(localStorage.getItem('selectedImage'))
+    // const localImage = JSON.parse(localStorage.getItem('selectedImage'))
     //console.log(localStorage.getItem('selectedImage'))
-    const [selectedImage, setSelectedImage] = useState(localImage ? localImage : "")
+    // const [selectedImage, setSelectedImage] = useState(localImage ? localImage : "")
     const [image_comp,setImage]=useState('')
 
     var current_questions = JSON.parse(localStorage.getItem('currentQuestions'))  ? JSON.parse(localStorage.getItem('currentQuestions'))  : {}
@@ -141,23 +141,27 @@ export default function Question_vComputer() {
         console.log("need answer",need_answer)
         console.log("envoye",message_envoye)
         console.log("reponse",reponse)
-        console.log("image equals",image_comp==localImage)
+        // console.log("image equals",image_comp==localImage)
         console.log("images left",imagesLeft<=1)
         console.log(imagesLeft)
-
+        const [end,setEnd]=useState("")
 
     return(
     <Wrapper>
         <ImageWrapper>
-            {imagesLeft>1 &&<Title>Your picture</Title>}
-            {imagesLeft<=1 && image_comp===localImage &&<Title>Computer won</Title>}
-            {imagesLeft<=1 && image_comp!==localImage &&<Title>Computer Lost</Title>}
+            {/* {imagesLeft>1 &&<Title>Your picture</Title>} */}
+            {/* {imagesLeft<=1 && image_comp===localImage &&<Title>Computer won</Title>}
+            {imagesLeft<=1 && image_comp!==localImage &&<Title>Computer Lost</Title>} */}
+            {image_comp && imagesLeft<=1 &&<Title>Is it the one you chose ?</Title>}
+            {image_comp && imagesLeft<=1 && <Select options={[{ value: 'Yes', label: 'Yes' },{ value: 'No', label: 'No' }]} onChange={(e)=>setEnd(e.value=="Yes")}/>}
+            {end===true &&<Title>Computer won</Title>}
+            {end===false &&<Title>Computer Lost</Title>}
             {need_answer && imagesLeft>1 &&<Title>Question : {question}</Title>}
             {need_answer && imagesLeft>1 && <Select options={[{ value: 'Yes', label: 'Yes' },{ value: 'No', label: 'No' }]} onChange={(e)=>send_answer(e)}/>}
             <ImageGrid>
-                { selectedImage &&  
+                { image_comp &&  
                         <>
-                            <PersonImage src={`data:image/png;base64,${selectedImage}`} alt="logo" />
+                            <PersonImage src={`data:image/png;base64,${image_comp}`} alt="logo" />
                         </>
                     
                 

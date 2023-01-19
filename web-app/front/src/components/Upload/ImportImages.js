@@ -7,6 +7,10 @@ export default function MultipleImageUpload() {
   const [filesList, setFiles] = useState();
   const navigate = useNavigate();
 
+  //A CHANGER AVEC LES LOCALS STORAGE
+  const id_user = 8;
+  const id_partie = 9;
+
   const handleChange = (event) => {
     setFiles(Array.from(event.target.files));
   };
@@ -17,14 +21,20 @@ export default function MultipleImageUpload() {
       formData.append(`file-${i}`, file)
     })
 
+    console.log(formData)
+
     const JSONdata = JSON.stringify({
-        id_player: 'blabla',
+        title : 'get_labels',
+        user : id_user,
+        id_partie: id_partie,
       })
       
     formData.append('data', JSONdata)
 
+    console.log(formData)
+
     // Send to Flask
-    fetch(`http://localhost:5000/add`, {
+    fetch(`http://localhost:5000/sent`, {
         method: 'POST',
         body: formData,
         contentType: false,
@@ -36,6 +46,7 @@ export default function MultipleImageUpload() {
   };
 
   const images = filesList ? [...filesList] : [];
+
 
     return (
       <div>

@@ -63,18 +63,18 @@ export default function ChooseImage() {
   }
 
   //useEffect continue de se ré-executer tant que l'on ne l'arrête pas (ici jamais mais ne fait rien si les conditions des ifs ne sont pas remplies)
-  useEffect(() => {
+  // useEffect(() => {
     
-    //si on a bien envoyé un message, que ce message est bien celui où on upload les images et que l'on a reçu la confirmation que le gestCNN a bien reçu les images, tant que l'on a pas reçu le bon message on demande
-    if (message_envoye!=="" && message_envoye['title']==='get_labels' && reponse['title']==="ConfirmSrv" && reponse['user']===message_envoye['user'] && reponse['id_partie']===message_envoye['id_partie'] && (message_recu['title']!=="AnswerSrv" ||message_recu['confirm']!==true || message_recu['id_partie']!==message_envoye['id_partie'] ||message_recu['user']!==message_envoye['user'])){
-      console.log("Get data again")
-      getData()
-    }else if (ack_upload)
-    {
-      navigate("/mode")
-    }
+  //   //si on a bien envoyé un message, que ce message est bien celui où on upload les images et que l'on a reçu la confirmation que le gestCNN a bien reçu les images, tant que l'on a pas reçu le bon message on demande
+  //   if (message_envoye!=="" && message_envoye['title']==='get_labels' && reponse['title']==="ConfirmSrv" && reponse['user']===message_envoye['user'] && reponse['id_partie']===message_envoye['id_partie'] && (message_recu['title']!=="AnswerSrv" ||message_recu['confirm']!==true || message_recu['id_partie']!==message_envoye['id_partie'] ||message_recu['user']!==message_envoye['user'])){
+  //     console.log("Get data again")
+  //     getData()
+  //   }else if (ack_upload)
+  //   {
+  //     navigate("/mode")
+  //   }
     
-  });
+  // });
   
   const [ack_upload,setAckUpload] = useState(false)
   const [message_recu, setMessageRecu] = useState("");
@@ -119,12 +119,12 @@ export default function ChooseImage() {
         >
           Random
         </Button>
-        <Button
+        {/* <Button
           type="button"
            onClick={send_images} 
         >
           Upload from computer
-        </Button>
+        </Button> */}
         <ImportImages></ImportImages>
       </General>
     </>

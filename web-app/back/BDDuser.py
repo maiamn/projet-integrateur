@@ -5,6 +5,7 @@ import couchdb
 import base64
 import random
 import io
+import json
   
 # Initializing flask app
 app = Flask(__name__)
@@ -16,12 +17,12 @@ cors.init_app(app)
 # Get images uploadees
 @app.route("/img/<id>", methods=["GET"])
 def get_images(id):
-    try :
-        # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
-        db = couch['user']
+    
+    # CouchDB
+    couch = couchdb.Server("http://user:user@localhost:5984")
+    db = couch['user']
 
-        db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()
+    db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()
 
     return send_file(
         io.BytesIO(image),
@@ -34,15 +35,40 @@ def get_images(id):
 @app.route("/upload", methods=["POST"])
 def upload_images():
     try :
+        print(request.headers.items)
+        #print('data',json.loads(request.data))
+        print('data',request.data)
+        #print('json',request.json)
         infos = request.files
-        print(infos)
+        content = request.form
+        labels = {}
+        print("infos",infos)
+
+        print("content",content)
+        print("labels",labels)
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
+        print("b")
         db = couch['user']
+        print("a")
+        print("keys",content.keys())
+        #print("file content",content['file'])
 
-        for file in infos.keys() :
-            doc = {'labels': "To add"}
+        # for k in content.keys(): 
+        #     if k in infps:
+        #         lab = content[k]
+    
+        # print("lab",lab)
+
+        for file in infos.keys():
+            print(content[file])
+            lab = list(content[file].split(" "))
+            lab = [int(e) for e in lab]
+            print(lab)
+            doc = {'labels': lab}
             db.save(doc)
+            print(file)
+            print(infos[file])
             f = infos[file].read()
             db.put_attachment(doc=doc, content=f, filename="image", content_type="image/jpg")
 
@@ -108,4 +134,4 @@ def delete_images():
 
 # Running app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

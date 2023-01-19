@@ -59,7 +59,7 @@ export default function ChooseMode() {
       navigate("/show_images");
     }else{
       localStorage.setItem("mode", "1")
-      navigate("/jeu_computer");
+      navigate("/question_computer");
     }
   }
 
