@@ -143,6 +143,54 @@ def delete_images():
     finally :
         return jsonify(response)
 
+# Get labels 
+@app.route("/labels", methods=["GET"])
+def get_labels():
+    try :
+        # Get JSON request
+        req = request.get_json()
+
+        #images = [
+        #        "000003.jpg",
+        #        "000004.jpg",
+        #        "000002.jpg"
+        #]
+        images = req['images']
+
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['user']
+        
+        labels_dic = {}
+
+        for image in images:
+            # Mango query
+            mango = ({  'selector': {'_id': image},
+                        'fields': ['labels']})
+            query_result = list(db.find(mango)) 
+            labels_image = query_result[0]['labels'] 
+            labels_dic[image] = labels_image
+
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"labels" : labels_dic},
+            "confirm": True
+        }
+
+    except Exception as e:
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"labels" : {}},
+            "confirm": False,
+            "error": repr(e)
+        }
+    finally :
+        return jsonify(response)
+
 # Running app
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
