@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
-import Select from 'react-select';
-import APIService from './APIService';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 const PersonImage = styled.img`
     height: 130px;
@@ -57,7 +56,7 @@ const Title = styled.h1`
 
 
 
-export default function Show_Images() {
+export default function Show_Images_Computer() {
 
     const localImages = JSON.parse(localStorage.getItem('imageList'))
     const [imageList, setImageList] = useState(localImages ? localImages : undefined)
@@ -67,46 +66,10 @@ export default function Show_Images() {
 
     const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
 
-
-    const options_questions = JSON.parse(localStorage.getItem('options_question'))
-    const [options, setOptions] = useState(options_questions ? options_questions : [{ value: 'No questions', label: 'No questions' }])
-    const [optionOk, setOk] = useState(options_questions ? true : false)
-
-    const [to_open, setOpen] = useState(options_questions ? true : false)
-
     const id_user = localStorage.getItem('id_user')
     const id_partie = localStorage.getItem(id_user)
 
     const navigate = useNavigate();
-
-
-    //fonction pour envoyer un message au dispatcher
-    const sendData = (message) => {
-        APIService.sendToServer({ message })
-            .then(response => {
-
-                localStorage.setItem('selectedList', JSON.stringify(selectedList));
-
-                let question_here = response['question']
-                current_questions[question_here] = response.answer.answer_computer;
-                localStorage.setItem('currentQuestions', JSON.stringify(current_questions));
-
-                navigate('/jeu_player')
-            })
-
-            .catch(error => console.log('error', error))
-    }
-
-    const send_answer = (e) => {
-        let message = {
-            'title': 'get_answer_computer',
-            'user': id_user,
-            'id_partie': id_partie,
-            'question': e.value
-        }
-
-        sendData(message)
-    }
 
     const getImages = (message) => {
         fetch('http://localhost:5000/sent', {
@@ -126,42 +89,22 @@ export default function Show_Images() {
                     })
                     setImageList(dic_images)
                     localStorage.setItem('imageList', JSON.stringify(dic_images));
-                    localStorage.setItem('imageListIds', JSON.stringify(result.answer.ids));
                 }
-
-                let list = []
-                console.log("questions", result.answer.questions)
-                Object.entries(result.answer.questions).map(([index, question]) => {
-                    list = list.concat({ value: index, label: question })
-                })
-                localStorage.setItem('options_question', JSON.stringify(list))
-                setOptions(list)
-                setOk(true)
-                setOpen(true)
             }))
             .catch(error => console.log(error))
     }
 
     useEffect(() => {
-        if ((imageList === undefined || !optionOk) && !to_open) {
+        if (imageList === undefined) {
             if (imageList === undefined) {
                 let message = {
                     "message": {
                         "title": "get_images",
                         "mode_image": localStorage.getItem('mode_image'),
-                        "questions": true,
+                        "questions": false,
                         "user": id_user,
                         "id_partie": id_partie,
                         "nb_images": 20
-                    }
-                }
-                getImages(message)
-            } else {
-                let message = {
-                    "message": {
-                        "title": "get_questions",
-                        "user": id_user,
-                        "id_partie": id_partie
                     }
                 }
                 getImages(message)
@@ -174,9 +117,7 @@ export default function Show_Images() {
     return (
         <Wrapper>
             <ImageWrapper>
-                {<Title>Ask a question</Title>}
-                {to_open && <Select options={options} onChange={(e) => send_answer(e)} />}
-
+                {<Title>Choose an image</Title>}
                 <ImageGrid>
                     {imageList && Object.entries(imageList).map(([index, image]) => {
                         return (
@@ -190,7 +131,7 @@ export default function Show_Images() {
                     }
                 </ImageGrid>
 
-
+                <Button type="button" onClick={() => navigate('/question_computer')}>Done</Button>
             </ImageWrapper>
 
             <TabWrapper>

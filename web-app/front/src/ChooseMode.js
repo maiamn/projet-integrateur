@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
 
 
 const Button = styled.button`
@@ -50,16 +49,13 @@ const General = styled.div`
 `;
 
 export default function ChooseMode() {
-  const dispatch = useDispatch()
   const navigate = useNavigate();
 
-  function setMode(mode) {
-    if (mode===0){
-      localStorage.setItem("mode", "0")
+  function Mode(mode) {
+    if (mode === 0) {
       navigate("/show_images");
-    }else{
-      localStorage.setItem("mode", "1")
-      navigate("/question_computer");
+    } else {
+      navigate("/show_images_computer");
     }
   }
 
@@ -67,8 +63,8 @@ export default function ChooseMode() {
     <>
       <General>
         <Title>Choose the mode</Title>
-        <Button type="button" onClick={()=> setMode(0)}>Try to guess</Button>
-        <Button type="button" onClick={()=> setMode(1)}>Computer tries to guess</Button>
+        <Button type="button" onClick={() => Mode(0)}>Try to guess</Button>
+        <Button type="button" onClick={() => Mode(1)}>Computer tries to guess</Button>
         <Paragraph>Precisions on the different modes :</Paragraph>
         <List>
           <li>

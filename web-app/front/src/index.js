@@ -1,40 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './MainPage';
 import reportWebVitals from './reportWebVitals';
 import store from './redux/store'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./MainPage"
 import ChooseImage from "./ChooseImage"
-import Question_vPlayer from "./Question_vPlayer";
 import ChooseMode from "./ChooseMode";
 import Question_vComputer from './Question_vComputer';
 import Show_Images from './Show_Images';
 import Fin_vPlayer from './Fin_vPlayer';
-import Fin_vComputer from './Fin_vComputer';
 import Jeu_vPlayer from './Jeu_vPlayer';
-import Jeu_vComputer from './Jeu_vComputer';
+import Show_Images_Computer from './Show_Images_Computer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-     
-    <BrowserRouter>
-      <Routes>
-        <Route path="/image" element={<ChooseImage />}/>
-        <Route path="/question_player" element={<Question_vPlayer />}/>
-        <Route path="/question_computer" element={<Question_vComputer />}/>
-        <Route path="/show_images" element={<Show_Images />}/>
-        <Route path="/fin_player" element={<Fin_vPlayer />}/>
-        <Route path="/fin_computer" element={<Fin_vComputer />}/>
-        <Route path="/jeu_player" element={<Jeu_vPlayer/>}/>
-        <Route path="/jeu_computer" element={<Jeu_vComputer/>}/>
-        <Route path="/" element={<MainPage />}/>
-        <Route path="/mode" element={<ChooseMode />} />
-      </Routes>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/image" element={<ChooseImage />} />
+          <Route path="/question_computer" element={<Question_vComputer />} />
+          <Route path="/show_images" element={<Show_Images />} />
+          <Route path="/show_images_computer" element={<Show_Images_Computer />} />
+          <Route path="/fin_player" element={<Fin_vPlayer />} />
+          <Route path="/jeu_player" element={<Jeu_vPlayer />} />
+          <Route path="/" element={<MainPage />} />
+          <Route path="/mode" element={<ChooseMode />} />
+        </Routes>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
