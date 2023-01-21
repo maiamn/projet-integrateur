@@ -26,7 +26,7 @@ import numpy as np
 #import coremltools
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 from tensorflow.keras import backend as K
 from ast import literal_eval
 from sklearn.utils import class_weight
@@ -51,7 +51,7 @@ from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
 
 from keras.callbacks import TensorBoard
-get_ipython().run_line_magic('load_ext', 'tensorboard')
+#get_ipython().run_line_magic('load_ext', 'tensorboard')
 
 
 # # Caractéristiques du modèle
