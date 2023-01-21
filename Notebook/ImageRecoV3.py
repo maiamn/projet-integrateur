@@ -13,9 +13,6 @@
 
 # # Packages nécessaires
 
-# In[1]:
-
-
 print("début")
 import os
 import pandas as pd
@@ -26,7 +23,7 @@ import numpy as np
 #import coremltools
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 from tensorflow.keras import backend as K
 from ast import literal_eval
 from sklearn.utils import class_weight
@@ -51,13 +48,10 @@ from tensorflow.keras.preprocessing.image import load_img
 from tensorflow.keras.preprocessing.image import img_to_array
 
 from keras.callbacks import TensorBoard
-get_ipython().run_line_magic('load_ext', 'tensorboard')
+#get_ipython().run_line_magic('load_ext', 'tensorboard')
 
 
 # # Caractéristiques du modèle
-
-# In[30]:
-
 
 dir_images = './archive'
 # Download dataset from https://www.kaggle.com/greg115/various-tagged-images
@@ -85,13 +79,7 @@ excluded_labels = ["Arched_Eyebrows","Attractive","Blurry","Double_Chin","Narrow
 
 # # Resize des images
 
-# In[ ]:
-
-
 print(" start ")
-
-
-# In[3]:
 
 
 f = DATASET_PATH
@@ -99,10 +87,6 @@ DATASET_PATH = RESIZED_PATH
 cnt = 0
 cnt_erreur = 0
 images = []
-
-
-# In[5]:
-
 
 
 '''
@@ -127,10 +111,6 @@ NB_SELECTED -= cnt_erreur
 print("Fin resize")
 '''
 
-
-# In[4]:
-
-
 images = []
 for file in os.listdir(RESIZED_PATH):
     if cnt<NB_SELECTED:
@@ -139,9 +119,6 @@ for file in os.listdir(RESIZED_PATH):
             cnt +=1
         except :
             print("pb avec ajout de l'image :", file)
-
-
-# In[5]:
 
 
 print("Taille de images:",len(images))
@@ -155,15 +132,8 @@ print("Taille de images:",len(images))
 #     <br>
 # On utilise le fichier indiquant la répartition pour splitter les données.
 
-# In[289]:
-
-# In[11]:
-
 
 print("Creation des df")
-
-
-# In[6]:
 
 
 df_old = pd.read_csv(METADATA_PATH)
@@ -176,9 +146,6 @@ split_df = pd.read_csv(SPLIT_PATH)
 
 # # Optionnel : on change les répartitions Training/Testing/Validation
 
-# In[7]:
-
-
 print(NB_SELECTED)
 print(len(images))
 part = [0 if i<(NB_SELECTED*0.7) else (1 if (i>=(NB_SELECTED*0.7) and i<NB_SELECTED*0.8) else 2) for i in range(NB_SELECTED)]
@@ -186,19 +153,12 @@ print(len(part))
 split_df = pd.DataFrame(data={'image_path':images, split_df.columns[1]:part},
                columns =['image_path', split_df.columns[1]])
 
-
-# In[ ]:
-
-
 print("split df")
 
 
 # # Récupération des labels pour chaque image et mise en forme du dataframe
 
 # Pour chaque image on fait une liste des labels qui lui sont attribués. Dans une liste on stocke tout les labels qui sont à 1 pour cette image.
-
-# In[8]:
-
 
 y = []
 for row in df_old.iterrows():
@@ -214,9 +174,6 @@ df = pd.DataFrame(list(zip(list(df_old[df_old.columns[0]]), y)),
 
 # on merge la répartion des images et leurs labels dans le même dataset
 
-# In[9]:
-
-
 result = pd.merge(split_df, df,on='image_path')
 #print(result)
 
@@ -227,43 +184,18 @@ result = pd.merge(split_df, df,on='image_path')
 
 # # Split des data
 
-# In[10]:
-
-
 training_df = result.loc[result['partition']==0]
 validation_df = result.loc[result['partition']==1]
 testing_df = result.loc[result['partition']==2]
 TESTING_SIZE = len(testing_df)
 
-
-# In[17]:
-
-
 #print(training_df)
-
-
-# In[18]:
-
-
 #print(validation_df)
-
-
-# In[19]:
-
-
 #print(testing_df)
 
 
 # # Récupération de la liste des labels possibles 
-
-# In[ ]:
-
-
 print("recup labels")
-
-
-# In[11]:
-
 
 all_labels = [] 
 for labels in training_df[TAGS_PATH_KEY].values.tolist():
@@ -278,9 +210,6 @@ print(unique_labels)
 
 # # Mise en forme et splitting 
 
-# In[12]:
-
-
 training_data_generator = ImageDataGenerator(rotation_range=30,
                                              zoom_range=0.2,
                                              width_shift_range=0.2,
@@ -289,10 +218,6 @@ training_data_generator = ImageDataGenerator(rotation_range=30,
                                              horizontal_flip=True,
                                              fill_mode="nearest",
                                              preprocessing_function=preprocess_input)
-
-
-# In[23]:
-
 
 print("Training :")
 training_generator = training_data_generator.flow_from_dataframe(dataframe=training_df,
@@ -329,28 +254,17 @@ testing_generator = testing_data_generator.flow_from_dataframe(dataframe=testing
 
 # # Fonctions d'évaluation
 
-# In[14]:
-
-
 def recall(y_true, y_pred):
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
     recall = true_positives / (possible_positives + K.epsilon())
     return recall
 
-
-# In[15]:
-
-
 def precision(y_true, y_pred):
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision = true_positives / (predicted_positives + K.epsilon())
     return precision
-
-
-# In[16]:
-
 
 def f1(y_true, y_pred):
     p = precision(y_true, y_pred)
@@ -360,18 +274,11 @@ def f1(y_true, y_pred):
 
 # # Définition et construction du modèle
 
-# In[17]:
-
-
 from keras.models import Sequential
 from keras.layers import Convolution2D
 from keras.layers import MaxPool2D
 from keras.layers import Flatten
 from keras.layers import Dense
-
-
-# In[18]:
-
 
 def get_model():
     def model(backbone):
@@ -390,10 +297,6 @@ def get_model():
     backbone.trainable = False
     return model(backbone)
 
-
-# In[26]:
-
-
 def get_model_V3():
     classifier= Sequential()
     classifier.add(Convolution2D(32, kernel_size=(5, 5), strides=(1, 1), 
@@ -409,18 +312,11 @@ def get_model_V3():
     
     return classifier
 
-
-# In[20]:
-
-
 #model = get_model()
 model = get_model_V3()
 
 
 # # Enregistrement du modèle
-
-# In[21]:
-
 
 checkpoint_dir = os.path.dirname(MODEL_PATH)
 cp_callback = ModelCheckpoint(filepath=MODEL_PATH,
@@ -433,27 +329,16 @@ tbCallBack = TensorBoard(log_dir='Graph/fit', histogram_freq=0, write_graph=True
 
 # # Entrainement du modèle
 
-# In[27]:
-
-
 print("debut fit")
 model.fit(x=training_generator,
             steps_per_epoch=training_generator.n // training_generator.batch_size,
             validation_data=validation_generator,
             validation_steps=validation_generator.n // validation_generator.batch_size,
-            callbacks=[PlotLossesKerasTF()],
-            epochs=50)
-
-
-# In[49]:
+            callbacks=[cp_callback,tbCallBack],
+            epochs=EPOCHS)
 
 
 #reload_ext tensorboard
-
-
-# In[48]:
-
-
 #%tensorboard --logdir Graph/fit
 
 
@@ -461,23 +346,11 @@ model.fit(x=training_generator,
 
 # os.listdir(checkpoint_dir)
 
-# In[49]:
-
-
 print("Récupération du modèle")
 model = load_model(MODEL_PATH, custom_objects={"f1": f1, "recall": recall,"precision": precision}, compile=True)
 
 
 # # Testing
-
-# In[29]:
-
-
-#print(testing_generator.batch_size)
-
-
-# In[28]:
-
 
 '''
 model.evaluate(
@@ -491,9 +364,6 @@ model.evaluate(
 
 # # Calcul des prédictions du modèle sur les données de test
 
-# In[52]:
-
-
 print("debut prediction")
 predictions = model.predict(testing_generator,
                               steps=testing_generator.n // testing_generator.batch_size,
@@ -503,21 +373,11 @@ print("fin prediction")
 
 # # Mise en forme des prédictions
 
-# In[104]:
-
-
 images_path = []
 predicted_titles = []
 pred_labels = []
 
-
-# In[105]:
-
-
 seuil_confiance = 40
-
-
-# In[106]:
 
 
 for prediction_index, prediction in enumerate(predictions):
@@ -528,10 +388,6 @@ for prediction_index, prediction in enumerate(predictions):
             pred_labels.append(unique_labels[i])
     images_path.append(testing_generator.filenames[prediction_index])
     predicted_titles.append(predicted_title)
-
-
-# In[107]:
-
 
 def difference(index) : 
     line = df_old.loc[df_old['image_id'] == images_path[index]]
@@ -558,16 +414,8 @@ def difference(index) :
 
 
 # # Calcul de proximité et d'influence
-
-# In[108]:
-
-
 accuracy = 0
 drop_features = {j:0 for j in unique_labels}
-
-
-# In[109]:
-
 
 for i in range(len(images_path)):
     test = difference(i)
@@ -578,23 +426,13 @@ for i in range(len(images_path)):
 
 # # Proximité et influence des labels
 
-# In[110]:
-
-
 print("Proximité moyenne avec les labels réels : ",accuracy/len(images_path),"%")
 print("Labels et le nombre de fois où ils étaient faux : ", dict(sorted(drop_features.items(), key=lambda item: item[1], reverse=True)))
-
-
-# In[ ]:
-
 
 print("Fin")
 #regarder quelles sont les features qui font chuter le plus (les plus subjectives)
 
-
 # # Test sur un dossier avec des images personnelles
-
-# In[262]:
 
 # 
 # <br>
@@ -606,8 +444,6 @@ print("Fin")
 #     img.save(f_img)<br>
 # print("Images resized !")<br>
 # 
-
-# In[263]:
 
 # 
 # <br>
@@ -643,8 +479,6 @@ print("Fin")
 #     best_labels.append(best)<br>
 #     labels_images.append(labels)<br>
 #      
-
-# In[264]:
 
 # 
 # <br>
