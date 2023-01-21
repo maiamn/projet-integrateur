@@ -21,6 +21,8 @@ cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
 
+model = '../../Notebook/saved_model/cp.h5'
+
 #Route pour vérifier que le microservice est bien lancé
 @app.route("/", methods=["GET"])
 def defaultRoute():
@@ -28,6 +30,8 @@ def defaultRoute():
 
 @app.route("/get_labels", methods=["POST"])
 def get_labels():
+    #labellise les images uploadées
+    logging.info("get labels")
 
     infos = request.files
     message = request.form
@@ -39,9 +43,9 @@ def get_labels():
 
     if message["title"]=="get_labels" :
         try :
-            df = predicted('../../Notebook/saved_model/cp.h5',infos)
+            df = predicted(model,infos)
             labels_list = df.values.tolist()
-
+            
             answer = {'title':'AnswerSrv','user':message['user'],'id_partie':message['id_partie'],'answer':{'labels':labels_list}, 'confirm':True}
 
         except Exception as e :

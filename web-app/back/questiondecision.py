@@ -250,7 +250,6 @@ def test():
 ################  Fonctions modifiées pour être utilisées dans le microservices  ########################
 def get_question_to_ask(list_images,excluded_labels): 
     df = json_to_dataframe(list_images)
-    print(df)
     label = choose_question(df,excluded_labels)
     return (questions[label]) 
 

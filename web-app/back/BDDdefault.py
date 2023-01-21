@@ -6,12 +6,17 @@ import base64
 import random
 import logging
 import traceback
+import logging
   
 # Initializing flask app
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.DEBUG)
 
 questions={
     'Male':"Is it a boy?",
@@ -51,6 +56,12 @@ questions={
     'Oval_Face':"Do they have an oval face?"    
 }
 
+
+#Route pour vérifier que le microservice est bien lancé
+@app.route("/", methods=["GET"])
+def defaultRoute():
+    return jsonify("BDD default OK on port 9000")
+
 # Get n images de celebrites
 @app.route("/celebs", methods=["POST"])
 def get_images():
@@ -61,6 +72,8 @@ def get_images():
         
         # Get JSON request
         req = request.get_json()
+        logging.debug("message from main %s", req)
+        
         nb_images = (int)( req['nb_images'] )
 
         # CouchDB
@@ -72,6 +85,7 @@ def get_images():
                     'fields': ['_id']})
 
         query_result = db.find(mango)    
+        
         id_list=[]         
         for row in query_result:                          
             id_list.append(row['_id'])         
@@ -80,6 +94,7 @@ def get_images():
 
         images = []
         for id in id_images:
+            logging.debug('id %s',id)
             images.append(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8'))
 
         response = {
@@ -87,7 +102,7 @@ def get_images():
             "user": req['user'],
             "id_partie": req['id_partie'],
             "nb_images": nb_images,
-            "answer": {"images": images},
+            "answer": {"images": images,"ids":id_images},
             "confirm": True
         }
         
@@ -104,41 +119,174 @@ def get_images():
         }
     finally :
         return jsonify(response)
-      
-# Get labels de celebrites
-@app.route("/labels", methods=["GET"])
-def get_labels():
-    logging.info('get labels')
+
+#Pour recuperer des images en fonction de leurs ids
+@app.route("/celebs_by_id", methods=["POST"])
+def get_images_by_id():
+
+    logging.info("Get images de celebrites by id")
 
     try :
-        #images = [
-        #        "000003.jpg",
-        #        "000004.jpg",
-        #        "000002.jpg"
-        #]
-        #images = req['images']
+        
+        # Get JSON request
+        req = request.get_json()
+        logging.debug(" message from main %s",req)
+        
+        id_images = req['id_images_default']
+
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['images']
+         
+
+        images = []
+        for id in id_images:
+            logging.debug("id %s",id)
+            images.append(base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8'))
+
+        logging.debug("images %s",images)
+        
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"images": images,"ids":id_images},
+            "confirm": True
+        }
+        
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"images": [], 'ids':[]},
+            "confirm": False,
+            "error": repr(e)
+        }
+    finally :
+        return jsonify(response)
+
+
+#recup les labels d'une image en fonction de son id
+@app.route("/labels_by_id", methods=["POST"])
+def get_labels_by_id():
+
+    logging.info("Get labels by id")
+
+    try :
+        
+        # Get JSON request
+        req = request.get_json()
+        logging.debug("messafge from main %s",req)
+        
+        id_image = req['id_image_default']
+
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['images']
+
+        labels_dic = {}
+
+        query_result = db.get(id_image)
+
+        logging.debug("query %s",query_result)
+    
+        labels_dic = query_result['labels']
+         
+        logging.debug("labels dic %s",labels_dic)
+
+
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"labels": labels_dic,"id":id_image},
+            "confirm": True
+        }
+        
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"labels": [], "id":""},
+            "confirm": False,
+            "error": repr(e)
+        }
+    finally :
+        return jsonify(response)
+      
+# # Get labels de celebrites
+# @app.route("/all_labels", methods=["GET"])
+# def get_all_labels():
+#     logging.info('get all labels')
+
+#     try :
+#         # CouchDB
+#         couch = couchdb.Server("http://user:user@localhost:5984")
+#         db = couch['images']
+        
+#         labels_dic = {}
+
+#         # Mango query
+#         mango = ({  'selector': {},
+#                     'fields': ['labels','_id']})
+
+#         query_result = list(db.find(mango)) 
+
+#         logging.debug("query %s",query_result)
+    
+#         for row in query_result: 
+#             labels_dic[row['_id']] = row['labels']
+
+#         logging.debug("nb images %s",len(labels_dic))
+#         logging.debug("labels images %s",labels_dic)
+        
+#         response = {
+#             "labels" : labels_dic,
+#             "nb_images" : len(labels_dic)
+#         }
+
+#     except Exception as e:
+#         logging.error(traceback.format_exc())
+#         response = {
+#             "labels" : {},
+#             "confirm": False,
+#             "error": repr(e)
+#         }
+#     finally :
+#         return jsonify(response)
+
+
+# Get labels de celebrites par id
+@app.route("/labels", methods=["POST"])
+def get_labels():
+    logging.info('get labels by id')
+
+    try :
+        req = request.get_json()
+        logging.debug(" message from main %s",req)
+        
+        id_images = req['images']
 
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
         db = couch['images']
         
         labels_dic = {}
-
-        # Mango query
-        mango = ({  'selector': {},
-                    'fields': ['labels','_id']})
-
-        query_result = list(db.find(mango)) 
-
-        print(query_result)
     
-        for row in query_result: 
-            labels_dic[row['_id']] = row['labels']
+        for id in id_images: 
+            lab = db.get(id) ['labels']
+            print(lab)
+            labels_dic[id] = {e:lab[e] for e in list(lab.keys())}
 
-        print("nb images",len(labels_dic))
+        logging.debug("nb images %s",len(labels_dic))
+        logging.debug("labels images %s",labels_dic)
+        
         response = {
-            "labels" : labels_dic,
-            "nb_images" : len(labels_dic)
+            "labels" : labels_dic
         }
 
     except Exception as e:
@@ -151,62 +299,7 @@ def get_labels():
     finally :
         return jsonify(response)
 
-# Delete Images associated with a party
-@app.route("/delete", methods=["POST"])
-def delete_images():
 
-    logging.info("delete")
-
-    try :
-        # Get JSON request
-        req = request.get_json()
-
-        logging.debug("req %s",req)
-
-        answer_user = 1 if req['answer_user'] else -1
-
-        for i in questions.keys() :
-            if questions[i]==req['question'] :
-                question = i
-
-        print(answer_user,question)
-
-        # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
-        db = couch['images']
-
-
-        
-        mango = ({ 'selector': {}, 'fields': ['labels','_id']})
-        query_result = list(db.find(mango))
-
-        print(query_result)
-
-        id_list_delete = []      
-        for row in query_result: 
-            print(row['_id'],row['labels'][question])
-            if row['labels'][question]!=answer_user :
-                id_list_delete.append(row['_id']) 
-                db.delete(db.get(row['_id'])) 
-
-        print("id_to_delete",id_list_delete)
-
-        response = {
-            "title": "AnswerSrV",
-            "confirm": True
-        }                      
-
-    
-    except Exception as e:
-        logging.error(traceback.format_exc())
-        response = {
-            "title": "AnswerSrV",
-            "confirm": False,
-            "error": repr(e)
-        }
-        
-    finally :
-        return jsonify(response)
 
 # Running app
 if __name__ == '__main__':

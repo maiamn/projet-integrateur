@@ -18,7 +18,7 @@ export default function MultipleImageUpload() {
   const handleUpload = () => {
     const formData = new FormData();
     filesList.map((file, i) => {
-      formData.append(`file-${i}`, file)
+      formData.append(`file-${i}.jpg`, file)
     })
 
     const JSONdata = JSON.stringify({
@@ -39,6 +39,7 @@ export default function MultipleImageUpload() {
     })
       .then((res) => {
         res.json()
+        localStorage.setItem('mode_image', 'upload')
         navigate("/mode");
       })
       .catch(error => console.log(error))

@@ -91,7 +91,11 @@ export default function Question_vComputer() {
                     if ('question_to_ask' in response.answer) {
                         setQuestion(response.answer.question_to_ask)
                     } else {
-                        setImage(response.answer.image)
+                        if ('image' in response.answer) {
+                            setImage(response.answer.image)
+                        } else {
+                            setEnd(false)
+                        }
                     }
 
                 } else {
@@ -141,22 +145,23 @@ export default function Question_vComputer() {
         localStorage.setItem('id_user', user)
         localStorage.setItem(user, partie)
 
-        navigate('/image')
+        navigate('/')
     }
 
     return (
         <Wrapper>
             <ImageWrapper>
 
-                {image_comp && imagesLeft <= 1 && <Title>Is it the one you chose ?</Title>}
-                {image_comp && imagesLeft <= 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
+                {image_comp && imagesLeft == 1 && <Title>Is it the one you chose ?</Title>}
+                {image_comp && imagesLeft == 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
                 {end === true && <Title>Computer won</Title>}
                 {end === false && <Title>Computer Lost</Title>}
+                {imagesLeft == 0 && <Title>No picture corresponds</Title>}
 
                 {need_answer && imagesLeft > 1 && <Title>Question : {question}</Title>}
                 {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
-                {image_comp && imagesLeft <= 1 &&
+                {image_comp && imagesLeft == 1 &&
                     <ImageGrid>
                         <>
                             <PersonImage src={`data:image/png;base64,${image_comp}`} alt="logo" />
@@ -166,7 +171,7 @@ export default function Question_vComputer() {
 
                 {imagesLeft > 1 && <Title>Images left : {imagesLeft}</Title>}
 
-                {image_comp && imagesLeft <= 1 && end !== "" &&
+                {imagesLeft <= 1 && end !== "" &&
                     <Button
                         type="button"
                         onClick={() => clear_and_go()}

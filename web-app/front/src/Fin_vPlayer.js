@@ -82,14 +82,19 @@ export default function Fin_vPlayer() {
             .catch(error => console.log('error', error))
     }
 
+    let last_image = ""
+    console.log(last_image)
     useEffect(() => {
         if (reponse === "" && message_envoye === "" && won === "") {
 
-            let last_image = ""
+
 
             Object.entries(imageList).map(([index, image]) => {
                 if (!selectedList_last[index]) {
-                    last_image = image
+
+                    last_image = JSON.parse(localStorage.getItem('imageListIds'))[index]
+
+
                 }
             })
 
@@ -109,8 +114,9 @@ export default function Fin_vPlayer() {
         localStorage.setItem('id_user', user)
         localStorage.setItem(user, partie)
 
-        navigate('/image')
+        navigate('/')
     }
+
 
 
     return (

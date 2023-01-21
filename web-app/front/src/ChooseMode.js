@@ -55,7 +55,7 @@ export default function ChooseMode() {
     if (mode === 0) {
       navigate("/show_images");
     } else {
-      navigate("/question_computer");
+      navigate("/show_images_computer");
     }
   }
 

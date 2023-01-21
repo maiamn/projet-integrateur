@@ -12,6 +12,7 @@ import Question_vComputer from './Question_vComputer';
 import Show_Images from './Show_Images';
 import Fin_vPlayer from './Fin_vPlayer';
 import Jeu_vPlayer from './Jeu_vPlayer';
+import Show_Images_Computer from './Show_Images_Computer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +24,7 @@ root.render(
           <Route path="/image" element={<ChooseImage />} />
           <Route path="/question_computer" element={<Question_vComputer />} />
           <Route path="/show_images" element={<Show_Images />} />
+          <Route path="/show_images_computer" element={<Show_Images_Computer />} />
           <Route path="/fin_player" element={<Fin_vPlayer />} />
           <Route path="/jeu_player" element={<Jeu_vPlayer />} />
           <Route path="/" element={<MainPage />} />

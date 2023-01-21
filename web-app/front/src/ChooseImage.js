@@ -47,6 +47,7 @@ export default function ChooseImage() {
         <Button
           type="button"
           onClick={() => {
+            localStorage.setItem('mode_image', 'random')
             navigate("/mode");
           }}
         >
