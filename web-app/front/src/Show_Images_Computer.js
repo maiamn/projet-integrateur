@@ -137,36 +137,41 @@ export default function Show_Images_Computer() {
 
 
     return (
-        <Wrapper>
-            <ImageWrapper>
-                {<Title>Choose an image</Title>}
-                {isLoading && <img src={loader} alt="loading..." />}
-                <ImageGrid>
-                    {imageList && Object.entries(imageList).map(([index, image]) => {
-                        return (
-                            !selectedList[index] &&
-                            <>
-                                <PersonImage onClick={() => toggleSelected(image)} src={`data:image/png;base64,${image}`} isSelected={selectedPic == image} alt="logo" />
-                            </>
-                        )
+        <div>
+            {isLoading ? <img style={{ 'marginTop': '300px', 'marginLeft': '400px' }} src={loader} alt="loading..." /> :
+                <>
+                    <Wrapper>
 
-                    })
-                    }
-                </ImageGrid>
+                        <ImageWrapper>
+                            {<Title>Choose an image</Title>}
+                            {isLoading && <img src={loader} alt="loading..." />}
+                            <ImageGrid>
+                                {imageList && Object.entries(imageList).map(([index, image]) => {
+                                    return (
+                                        !selectedList[index] &&
+                                        <>
+                                            <PersonImage onClick={() => toggleSelected(image)} src={`data:image/png;base64,${image}`} isSelected={selectedPic == image} alt="logo" />
+                                        </>
+                                    )
 
-                <Button type="button" onClick={() => {
-                    navigate('/question_computer')
-                    localStorage.setItem('localPic', JSON.stringify(selectedPic))
-                }
-                }>Done</Button>
-            </ImageWrapper>
+                                })
+                                }
+                            </ImageGrid>
 
-            <TabWrapper>
-                <RightTab questions={current_questions} ></RightTab>
-            </TabWrapper>
+                            <Button type="button" onClick={() => {
+                                navigate('/question_computer')
+                                localStorage.setItem('localPic', JSON.stringify(selectedPic))
+                            }
+                            }>Done</Button>
+                        </ImageWrapper>
 
-        </Wrapper>
+                        <TabWrapper>
+                            <RightTab questions={current_questions} ></RightTab>
+                        </TabWrapper>
 
+                    </Wrapper>
+                </>}
+        </div>
 
     );
 }

@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ImportImages from "./components/Upload/ImportImages";
+import loader from './components/Snake.gif'
+import { useState } from "react";
+
 
 
 const Button = styled.button`
@@ -39,21 +42,25 @@ const General = styled.div`
 export default function ChooseImage() {
 
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <>
       <General>
-        <Title>What pictures do you want to play with ?</Title>
-        <Button
-          type="button"
-          onClick={() => {
-            localStorage.setItem('mode_image', 'random')
-            navigate("/mode");
-          }}
-        >
-          Random
-        </Button>
-        <ImportImages></ImportImages>
+        {isLoading ? <img style={{ 'marginTop': '300px' }} src={loader} alt="loading..." /> :
+          <>
+            <Title>What pictures do you want to play with ?</Title>
+            <Button
+              type="button"
+              onClick={() => {
+                localStorage.setItem('mode_image', 'random')
+                navigate("/mode");
+              }}
+            >
+              Random
+            </Button>
+            <ImportImages setIsLoading={setIsLoading}></ImportImages>
+          </>}
       </General>
     </>
   );

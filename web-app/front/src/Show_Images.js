@@ -5,6 +5,7 @@ import './App.css';
 import Select from 'react-select';
 import APIService from './APIService';
 import { useNavigate } from 'react-router-dom';
+import loader from './components/Snake.gif'
 
 const PersonImage = styled.img`
     height: 130px;
@@ -56,6 +57,8 @@ const Title = styled.h1`
 
 export default function Show_Images() {
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const localImages = JSON.parse(localStorage.getItem('imageList'))
     const [imageList, setImageList] = useState(localImages ? localImages : undefined)
 
@@ -79,6 +82,8 @@ export default function Show_Images() {
 
     //fonction pour envoyer un message au dispatcher
     const sendData = (message) => {
+        setIsLoading(true)
+
         APIService.sendToServer({ message })
             .then(response => {
 
@@ -87,7 +92,7 @@ export default function Show_Images() {
                 let question_here = response['question']
                 current_questions[question_here] = response.answer.answer_computer;
                 localStorage.setItem('currentQuestions', JSON.stringify(current_questions));
-
+                setIsLoading(false)
                 navigate('/jeu_player')
             })
 
@@ -106,6 +111,7 @@ export default function Show_Images() {
     }
 
     const getImages = (message) => {
+        setIsLoading(true)
         fetch('http://localhost:5000/sent', {
             credentials: "include",
             method: 'POST',
@@ -135,6 +141,7 @@ export default function Show_Images() {
                 setOptions(list)
                 setOk(true)
                 setOpen(true)
+                setIsLoading(false)
             }))
             .catch(error => console.log(error))
     }
@@ -169,32 +176,38 @@ export default function Show_Images() {
 
 
     return (
-        <Wrapper>
-            <ImageWrapper>
-                {<Title>Ask a question</Title>}
-                {to_open && <Select options={options} onChange={(e) => send_answer(e)} />}
+        <div>
+            {isLoading ? <img style={{ 'marginTop': '300px', 'marginLeft': '400px' }} src={loader} alt="loading..." /> :
+                <>
+                    <Wrapper>
 
-                <ImageGrid>
-                    {imageList && Object.entries(imageList).map(([index, image]) => {
-                        return (
-                            <>
-                                <PersonImage src={`data:image/png;base64,${image}`} stillIn={selectedList[index]} /*isSelected={selectedList[index]}*/ alt="logo" />
-                            </>
-                        )
+                        <ImageWrapper>
+                            {<Title>Ask a question</Title>}
+                            {to_open && <Select options={options} onChange={(e) => send_answer(e)} />}
 
-                    })
-                    }
-                </ImageGrid>
+                            <ImageGrid>
+                                {imageList && Object.entries(imageList).map(([index, image]) => {
+                                    return (
+                                        <>
+                                            <PersonImage src={`data:image/png;base64,${image}`} stillIn={selectedList[index]} /*isSelected={selectedList[index]}*/ alt="logo" />
+                                        </>
+                                    )
+
+                                })
+                                }
+                            </ImageGrid>
 
 
-            </ImageWrapper>
+                        </ImageWrapper>
 
-            <TabWrapper>
-                <RightTab questions={current_questions} ></RightTab>
-            </TabWrapper>
+                        <TabWrapper>
+                            <RightTab questions={current_questions} ></RightTab>
+                        </TabWrapper>
 
-        </Wrapper>
+                    </Wrapper>
 
+                </>}
+        </div>
 
     );
 }

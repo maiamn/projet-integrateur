@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
+import loader from './components/Snake.gif'
 
 const Button = styled.button`
   border: 2px solid #000000;
@@ -68,6 +69,8 @@ const Title = styled.h1`
 
 export default function Jeu_vPlayer() {
 
+    const [isLoading, setIsLoading] = useState(true)
+
     const imageList = JSON.parse(localStorage.getItem('imageList')) ? JSON.parse(localStorage.getItem('imageList')) : undefined;
 
     const navigate = useNavigate();
@@ -110,6 +113,7 @@ export default function Jeu_vPlayer() {
 
     return (
         <Wrapper>
+
             <ImageWrapper>
                 <Title>Eliminate images</Title>
                 <p>Click on the images you want to delete and then click on "Delete" below.</p>
@@ -128,6 +132,7 @@ export default function Jeu_vPlayer() {
                     onClick={() => send_answer()}
                 >Delete</Button>
             </ImageWrapper>
+
             <TabWrapper>
                 <RightTab questions={current_questions}></RightTab>
             </TabWrapper>

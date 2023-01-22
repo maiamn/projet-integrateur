@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
-export default function MultipleImageUpload() {
+
+export default function MultipleImageUpload(props) {
   const [filesList, setFiles] = useState();
   const images = filesList ? [...filesList] : [];
 
@@ -31,6 +33,8 @@ export default function MultipleImageUpload() {
 
 
     // Send to Flask
+    props.setIsLoading(true)
+
     fetch(`http://localhost:5000/sent`, {
       method: 'POST',
       body: formData,
@@ -40,9 +44,11 @@ export default function MultipleImageUpload() {
       .then((res) => {
         res.json()
         localStorage.setItem('mode_image', 'upload')
+        props.setIsLoading(false)
         navigate("/mode");
       })
       .catch(error => console.log(error))
+
 
   };
 

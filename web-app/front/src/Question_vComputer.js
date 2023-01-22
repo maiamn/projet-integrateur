@@ -174,54 +174,58 @@ export default function Question_vComputer() {
     console.log('end', end)
 
     return (
-        <Wrapper>
-            <ImageWrapper>
+        <div>
+            {isLoading ? <img style={{ 'marginTop': '300px', 'marginLeft': '400px' }} src={loader} alt="loading..." /> :
+                <>
+                    <Wrapper>
+                        <ImageWrapper>
 
 
-                {isLoading ? <img src={loader} alt="loading..." /> :
-                    <>
-                        {image_comp && imagesLeft == 1 && end === "" && <Title style={{ 'marginBottom': '100px' }}>Is it the one you chose ?</Title>}
-                        {image_comp && imagesLeft == 1 && end === "" && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
-                        {end === true && <Title style={{ 'marginBottom': '100px' }}>Computer won ! </Title>}
-                        {end === false && <Title style={{ 'marginBottom': '100px' }}>Computer Lost ! </Title>}
-                        {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
+                            {image_comp && imagesLeft == 1 && end === "" && <Title style={{ 'marginBottom': '100px' }}>Is it the one you chose ?</Title>}
+                            {image_comp && imagesLeft == 1 && end === "" && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
-                        {need_answer && imagesLeft > 1 && <Title style={{ 'marginTop': '0px' }}>{question}</Title>}
-                        {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
-                        {need_answer && imagesLeft > 1 && pic &&
+                            {end === true && <Title style={{ 'marginBottom': '100px' }}>Computer won ! </Title>}
+                            {end === false && <Title style={{ 'marginBottom': '100px' }}>Computer Lost ! </Title>}
+                            {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
 
-                            <>
-                                <PersonImage style={{ 'marginTop': '100px' }} src={`data:image/png;base64,${pic}`} alt="logo" />
-                            </>
+                            {need_answer && imagesLeft > 1 && <Title style={{ 'marginTop': '0px' }}>{question}</Title>}
+                            {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
+                            {need_answer && imagesLeft > 1 && pic &&
 
-
-                        }
-                        {image_comp && imagesLeft == 1 &&
-
-                            <>
-                                <PersonImage style={{ 'marginTop': '100px', "marginBottom": "100px" }} src={`data:image/png;base64,${image_comp}`} alt="logo" />
-                            </>
+                                <>
+                                    <PersonImage style={{ 'marginTop': '100px' }} src={`data:image/png;base64,${pic}`} alt="logo" />
+                                </>
 
 
-                        }
+                            }
+                            {image_comp && imagesLeft == 1 &&
 
-                        {imagesLeft > 1 && <Title style={{ 'marginTop': '200px' }}>Images left : {imagesLeft}</Title>}
+                                <>
+                                    <PersonImage style={{ 'marginTop': '100px', "marginBottom": "100px" }} src={`data:image/png;base64,${image_comp}`} alt="logo" />
+                                </>
 
-                        {imagesLeft <= 1 && end !== "" &&
-                            <Button
-                                type="button"
-                                onClick={() => clear_and_go()}
-                            >Play again</Button>
-                        }
-                    </>
-                }
 
-            </ImageWrapper>
+                            }
 
-            <TabWrapper>
-                <RightTab questions={current_questions} ></RightTab>
-            </TabWrapper>
-        </Wrapper>
+                            {imagesLeft > 1 && <Title style={{ 'marginTop': '200px' }}>Images left : {imagesLeft}</Title>}
+
+                            {imagesLeft <= 1 && end !== "" &&
+                                <Button
+                                    type="button"
+                                    onClick={() => clear_and_go()}
+                                >Play again</Button>
+                            }
+
+
+                        </ImageWrapper>
+
+                        <TabWrapper>
+                            <RightTab questions={current_questions} ></RightTab>
+                        </TabWrapper>
+                    </Wrapper>
+                </>
+            }
+        </div>
     );
 }

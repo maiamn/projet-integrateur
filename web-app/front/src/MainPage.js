@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { update } from './redux/profileSlice'
+import loader from './components/Snake.gif'
 
 
 const Title = styled.h1`
@@ -47,6 +48,9 @@ const PlayerName = styled.input`
 `
 
 function MainPage() {
+
+  const [isLoading, setIsLoading] = useState(true)
+
   const navigate = useNavigate();
 
   const [data, setdata] = useState({
@@ -68,6 +72,7 @@ function MainPage() {
       .then(response => response.json().then(function (result) {
         setdata({ image: result.data, })
       }))
+
       .catch(error => console.log(error))
 
   }, []);

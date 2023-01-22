@@ -4,6 +4,7 @@ import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
+import loader from './components/Snake.gif'
 
 const Button = styled.button`
   border: 2px solid #000000;
@@ -69,6 +70,8 @@ const Title = styled.h1`
 
 export default function Fin_vPlayer() {
 
+    const [isLoading, setIsLoading] = useState(true)
+
     const imageList = JSON.parse(localStorage.getItem('imageList')) ? JSON.parse(localStorage.getItem('imageList')) : {}
 
     const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
@@ -86,10 +89,12 @@ export default function Fin_vPlayer() {
     const navigate = useNavigate();
 
     const sendData = (message) => {
+        setIsLoading(true)
         APIService.sendToServer({ message })
             .then(response => {
                 setReponse(response);
                 setWon(response.answer.answer_check)
+                setIsLoading(false)
             })
             .catch(error => console.log('error', error))
     }
@@ -132,29 +137,36 @@ export default function Fin_vPlayer() {
 
 
     return (
-        <Wrapper>
-            <ImageWrapper>
-                {won === true && <Title>You won !</Title>}
-                {won === false && <Title>You lost !</Title>}
-                <ImageGrid>
-                    {imageList && Object.entries(imageList).map(([index, image]) => {
-                        return (
-                            <>
-                                <PersonImage src={`data:image/png;base64,${image}`} alt="logo" stillIn={selectedList_last[index]} />
-                            </>
-                        )
-                    })
-                    }
+        <div>
+            {isLoading ? <img style={{ 'marginTop': '300px', 'marginLeft': '400px' }} src={loader} alt="loading..." /> :
+                <>
+                    <Wrapper>
 
-                </ImageGrid>
-                <Button
-                    type="button"
-                    onClick={() => clear_and_go()}
-                >Play again</Button>
-            </ImageWrapper>
-            <TabWrapper>
-                <RightTab questions={current_questions}></RightTab>
-            </TabWrapper>
-        </Wrapper>
+                        <ImageWrapper>
+                            {won === true && <Title>You won !</Title>}
+                            {won === false && <Title>You lost !</Title>}
+                            <ImageGrid>
+                                {imageList && Object.entries(imageList).map(([index, image]) => {
+                                    return (
+                                        <>
+                                            <PersonImage src={`data:image/png;base64,${image}`} alt="logo" stillIn={selectedList_last[index]} />
+                                        </>
+                                    )
+                                })
+                                }
+
+                            </ImageGrid>
+                            <Button
+                                type="button"
+                                onClick={() => clear_and_go()}
+                            >Play again</Button>
+                        </ImageWrapper>
+
+                        <TabWrapper>
+                            <RightTab questions={current_questions}></RightTab>
+                        </TabWrapper>
+                    </Wrapper>
+                </>}
+        </div>
     );
 }
