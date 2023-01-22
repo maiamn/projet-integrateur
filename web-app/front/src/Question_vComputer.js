@@ -5,18 +5,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
 import Select from 'react-select';
-
-const Button = styled.button`
-  border: 2px solid #000000;
-  width: 194px;
-  height: 82px;
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  &: hover {
-    cursor: pointer;
-  }
-`;
+import loader from './components/Snake.gif'
 
 const PersonImage = styled.img`
     height: 130px;
@@ -68,9 +57,23 @@ const Title = styled.h1`
   margin-bottom: 0;
 `;
 
+const Button = styled.button`
+  border: 2px solid #000000;
+  width: 194px;
+  height: 82px;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  &: hover {
+    cursor: pointer;
+  }
+`;
+
 export default function Question_vComputer() {
 
     const [image_comp, setImage] = useState('')
+
+    const [isLoading, setIsLoading] = useState(true)
 
     const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
 
@@ -93,6 +96,7 @@ export default function Question_vComputer() {
 
 
     const sendData = (message) => {
+        setIsLoading(true)
         APIService.sendToServer({ message })
             .then(response => {
 
@@ -120,6 +124,7 @@ export default function Question_vComputer() {
                     localStorage.setItem('currentQuestions', JSON.stringify(current_questions));
 
                 }
+                setIsLoading(false)
             })
             .catch(error => console.log('error', error))
     }
@@ -172,39 +177,44 @@ export default function Question_vComputer() {
         <Wrapper>
             <ImageWrapper>
 
-                {image_comp && imagesLeft == 1 && end === "" && <Title style={{ 'marginBottom': '100px' }}>Is it the one you chose ?</Title>}
-                {image_comp && imagesLeft == 1 && end === "" && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
-                {end === true && <Title style={{ 'marginBottom': '100px' }}>Computer won ! </Title>}
-                {end === false && <Title style={{ 'marginBottom': '100px' }}>Computer Lost ! </Title>}
-                {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
-
-                {need_answer && imagesLeft > 1 && <Title style={{ 'marginTop': '0px' }}>{question}</Title>}
-                {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
-                {need_answer && imagesLeft > 1 && pic &&
-
+                {isLoading ? <img src={loader} alt="loading..." /> :
                     <>
-                        <PersonImage style={{ 'marginTop': '100px' }} src={`data:image/png;base64,${pic}`} alt="logo" />
+                        {image_comp && imagesLeft == 1 && end === "" && <Title style={{ 'marginBottom': '100px' }}>Is it the one you chose ?</Title>}
+                        {image_comp && imagesLeft == 1 && end === "" && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
+
+                        {end === true && <Title style={{ 'marginBottom': '100px' }}>Computer won ! </Title>}
+                        {end === false && <Title style={{ 'marginBottom': '100px' }}>Computer Lost ! </Title>}
+                        {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
+
+                        {need_answer && imagesLeft > 1 && <Title style={{ 'marginTop': '0px' }}>{question}</Title>}
+                        {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
+                        {need_answer && imagesLeft > 1 && pic &&
+
+                            <>
+                                <PersonImage style={{ 'marginTop': '100px' }} src={`data:image/png;base64,${pic}`} alt="logo" />
+                            </>
+
+
+                        }
+                        {image_comp && imagesLeft == 1 &&
+
+                            <>
+                                <PersonImage style={{ 'marginTop': '100px', "marginBottom": "100px" }} src={`data:image/png;base64,${image_comp}`} alt="logo" />
+                            </>
+
+
+                        }
+
+                        {imagesLeft > 1 && <Title style={{ 'marginTop': '200px' }}>Images left : {imagesLeft}</Title>}
+
+                        {imagesLeft <= 1 && end !== "" &&
+                            <Button
+                                type="button"
+                                onClick={() => clear_and_go()}
+                            >Play again</Button>
+                        }
                     </>
-
-
-                }
-                {image_comp && imagesLeft == 1 &&
-
-                    <>
-                        <PersonImage style={{ 'marginTop': '100px', "marginBottom": "100px" }} src={`data:image/png;base64,${image_comp}`} alt="logo" />
-                    </>
-
-
-                }
-
-                {imagesLeft > 1 && <Title style={{ 'marginTop': '200px' }}>Images left : {imagesLeft}</Title>}
-
-                {imagesLeft <= 1 && end !== "" &&
-                    <Button
-                        type="button"
-                        onClick={() => clear_and_go()}
-                    >Play again</Button>
                 }
 
             </ImageWrapper>

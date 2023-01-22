@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
+import loader from './components/Snake.gif'
 
 const Button = styled.button`
   border: 2px solid #000000;
@@ -15,6 +16,7 @@ const Button = styled.button`
     cursor: pointer;
   }
 `;
+
 
 const PersonImage = styled.img`
     height: 130px;
@@ -71,6 +73,7 @@ export default function Show_Images_Computer() {
 
     const localImages = JSON.parse(localStorage.getItem('imageList'))
     const [imageList, setImageList] = useState(localImages ? localImages : undefined)
+    const [isLoading, setIsLoading] = useState(true)
 
     const localList = JSON.parse(localStorage.getItem('selectedList'))
     const selectedList = localList ? localList : Array(20).fill(false)
@@ -85,6 +88,7 @@ export default function Show_Images_Computer() {
     const navigate = useNavigate();
 
     const getImages = (message) => {
+        setIsLoading(true)
         fetch('http://localhost:5000/sent', {
             credentials: "include",
             method: 'POST',
@@ -102,6 +106,7 @@ export default function Show_Images_Computer() {
                     })
                     setImageList(dic_images)
                     localStorage.setItem('imageList', JSON.stringify(dic_images));
+                    setIsLoading(false)
                 }
             }))
             .catch(error => console.log(error))
@@ -135,6 +140,7 @@ export default function Show_Images_Computer() {
         <Wrapper>
             <ImageWrapper>
                 {<Title>Choose an image</Title>}
+                {isLoading && <img src={loader} alt="loading..." />}
                 <ImageGrid>
                     {imageList && Object.entries(imageList).map(([index, image]) => {
                         return (
