@@ -250,7 +250,7 @@ def test_receive():
                             'title' : 'AnswerSrV',
                             'user' : message['user'],
                             'id_partie' : message['id_partie'],
-                            'question' : message['question'],
+                            'question' : res_qd['question'],
                             'answer' : {
                                         'answer_computer': answer
                                         },

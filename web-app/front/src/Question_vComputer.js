@@ -5,7 +5,18 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
 import Select from 'react-select';
-import { Button } from 'react-bootstrap';
+
+const Button = styled.button`
+  border: 2px solid #000000;
+  width: 194px;
+  height: 82px;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  &: hover {
+    cursor: pointer;
+  }
+`;
 
 const PersonImage = styled.img`
     height: 130px;
@@ -14,6 +25,7 @@ const PersonImage = styled.img`
         cursor: pointer;
         border: 3px solid #FF0000;
     }
+    opacity: ${props => (!props.stillIn ? '1' : '0.4')};
     border: ${props => (props.isSelected ? '3px solid #FF0000;' : '3px solid transparent')};
 `
 const TabWrapper = styled.div`
@@ -61,6 +73,8 @@ export default function Question_vComputer() {
     const [image_comp, setImage] = useState('')
 
     const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
+
+    const pic = JSON.parse(localStorage.getItem('localPic')) ? JSON.parse(localStorage.getItem('localPic')) : ""
 
     const [need_answer, setNeedAnswer] = useState(false)
 
@@ -147,30 +161,44 @@ export default function Question_vComputer() {
 
         navigate('/')
     }
-    console.log(image_comp)
+
+
+
+    console.log('image_comp', image_comp)
+    console.log('imagesLeft', imagesLeft)
+    console.log('end', end)
 
     return (
         <Wrapper>
             <ImageWrapper>
 
-                {image_comp && imagesLeft == 1 && <Title>Is it the one you chose ?</Title>}
-                {image_comp && imagesLeft == 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
+                {image_comp && imagesLeft == 1 && end === "" && <Title style={{ 'marginBottom': '100px' }}>Is it the one you chose ?</Title>}
+                {image_comp && imagesLeft == 1 && end === "" && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
-                {end === true && <Title>Computer won</Title>}
-                {end === false && <Title>Computer Lost</Title>}
+                {end === true && <Title style={{ 'marginBottom': '100px' }}>Computer won ! </Title>}
+                {end === false && <Title style={{ 'marginBottom': '100px' }}>Computer Lost ! </Title>}
                 {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
 
-                {need_answer && imagesLeft > 1 && <Title>Question : {question}</Title>}
+                {need_answer && imagesLeft > 1 && <Title style={{ 'marginTop': '0px' }}>{question}</Title>}
                 {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}
+                {need_answer && imagesLeft > 1 && pic &&
+
+                    <>
+                        <PersonImage style={{ 'marginTop': '100px' }} src={`data:image/png;base64,${pic}`} alt="logo" />
+                    </>
+
+
+                }
                 {image_comp && imagesLeft == 1 &&
-                    <ImageGrid>
-                        <>
-                            <PersonImage src={`data:image/png;base64,${image_comp}`} alt="logo" />
-                        </>
 
-                    </ImageGrid>}
+                    <>
+                        <PersonImage style={{ 'marginTop': '100px', "marginBottom": "100px" }} src={`data:image/png;base64,${image_comp}`} alt="logo" />
+                    </>
 
-                {imagesLeft > 1 && <Title>Images left : {imagesLeft}</Title>}
+
+                }
+
+                {imagesLeft > 1 && <Title style={{ 'marginTop': '200px' }}>Images left : {imagesLeft}</Title>}
 
                 {imagesLeft <= 1 && end !== "" &&
                     <Button

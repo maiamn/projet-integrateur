@@ -73,7 +73,7 @@ def answer_question() :
     elif message['labels'][q]==-1 :
         answer = False
 
-    return(jsonify({"answer" : answer}))
+    return(jsonify({"answer" : answer, "question":questiondecision.questions[q]}))
 
 @app.route('/process_question', methods=["POST"])
 def process_question() : 

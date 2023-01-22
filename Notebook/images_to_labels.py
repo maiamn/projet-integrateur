@@ -103,7 +103,7 @@ def predict_labels(model,images,unique_labels):
         img = images[file]
         print("mon image ", img)
         my_image = Image.open(img)
-        my_image.resize((224,224))
+        my_image = my_image.resize((224,224))
 
         #preprocess the image
         my_image = img_to_array(my_image)

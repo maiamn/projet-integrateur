@@ -9,11 +9,8 @@ import { useNavigate } from 'react-router-dom';
 const PersonImage = styled.img`
     height: 130px;
     margin:3px;
-    &: hover {
-        cursor: pointer;
-        border: 3px solid #FF0000;
-    }
-    border: ${props => (props.isSelected ? '3px solid #FF0000;' : '3px solid transparent')};
+
+    opacity: ${props => (!props.stillIn ? '1' : '0.4')};
 `
 const TabWrapper = styled.div`
     display: inline-block;
@@ -180,9 +177,8 @@ export default function Show_Images() {
                 <ImageGrid>
                     {imageList && Object.entries(imageList).map(([index, image]) => {
                         return (
-                            !selectedList[index] &&
                             <>
-                                <PersonImage src={`data:image/png;base64,${image}`} /*isSelected={selectedList[index]}*/ alt="logo" />
+                                <PersonImage src={`data:image/png;base64,${image}`} stillIn={selectedList[index]} /*isSelected={selectedList[index]}*/ alt="logo" />
                             </>
                         )
 

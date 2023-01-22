@@ -3,7 +3,18 @@ import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+
+const Button = styled.button`
+  border: 2px solid #000000;
+  width: 194px;
+  height: 82px;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  &: hover {
+    cursor: pointer;
+  }
+`;
 
 const PersonImage = styled.img`
     height: 130px;
@@ -12,6 +23,7 @@ const PersonImage = styled.img`
         cursor: pointer;
         border: 3px solid #FF0000;
     }
+    opacity: ${props => (!props.stillIn ? '1' : '0.4')};
     border: ${props => (props.isSelected ? '3px solid #FF0000;' : '3px solid transparent')};
 `
 const TabWrapper = styled.div`
@@ -46,12 +58,12 @@ const Title = styled.h1`
   padding-right: 100px;
   padding-left: 100px;
   font-weight: 600;
-  font-size: 50px;
+  font-size: 40px;
   line-height: 77px;
   text-align: center;
   text-transform: uppercase;
-  margin-top: 20px;
-  margin-bottom: 0;
+  margin-top: 50px;
+  margin-bottom: 0px;
 `;
 
 export default function Jeu_vPlayer() {
@@ -99,13 +111,13 @@ export default function Jeu_vPlayer() {
     return (
         <Wrapper>
             <ImageWrapper>
-                <Title>Click on the picture you want to delete</Title>
+                <Title>Eliminate images</Title>
+                <p>Click on the images you want to delete and then click on "Delete" below.</p>
                 <ImageGrid>
                     {imageList && Object.entries(imageList).map(([index, image]) => {
                         return (
-                            !selectedList_last[index] &&
                             <>
-                                <PersonImage onClick={() => toggleSelected(index)} src={`data:image/png;base64,${image}`} isSelected={selectedList[index]} alt="logo" />
+                                <PersonImage onClick={() => toggleSelected(index)} src={`data:image/png;base64,${image}`} stillIn={selectedList_last[index]} isSelected={selectedList[index]} alt="logo" />
                             </>
                         )
                     })
@@ -114,7 +126,7 @@ export default function Jeu_vPlayer() {
                 <Button
                     type="button"
                     onClick={() => send_answer()}
-                >DELETE</Button>
+                >Delete</Button>
             </ImageWrapper>
             <TabWrapper>
                 <RightTab questions={current_questions}></RightTab>

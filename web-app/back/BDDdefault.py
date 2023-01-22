@@ -19,7 +19,7 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 
 questions={
-    'Male':"Is it a boy?",
+    'Male':"Are they a Male?",
     'Young':"Are they young?",
     'Eyeglasses':"Do they wear eyeglasses?",
     'Wearing_Necktie':"Do they wear a tie?",
@@ -32,7 +32,7 @@ questions={
     'Bushy_Eyebrows':"Do they have bushy eyebrows?",
     'Wearing_Lipstick':"Do they wear lipstick?",
     'Heavy_Makeup':"Do they wear heavy makeup?",
-    'Smiling':"Do they smile?",
+    'Smiling':"Are they smiling?",
     'Mouth_Slightly_Open':"Do they have their mouth slightly open?",
     'Receding_Hairline':"Do they have a receding hairline?",
     'Bald':"Are they bald?",
@@ -43,7 +43,7 @@ questions={
     'Bangs':"Do they have bangs?",
     'Wavy_Hair':"Do they have wavy hair?",
     'Straight_Hair':"Do they have straight hair?",
-    'No_Beard':"Do they have no beard?",
+    'No_Beard':"Are they beardless?",
     '5_o_Clock_Shadow':"Do they have a 5 o’clock shadow?",
     'Goatee':"Do they have a goatee?",
     'Mustache':"Do they have a mustache?",
@@ -140,8 +140,8 @@ def get_image_by_id():
          
 
         
-        logging.debug("id %s",id)
-        image = base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')
+        logging.debug("id %s",id_image)
+        image = base64.b64encode(db.get_attachment(id_image, list(db.get(id_image) ['_attachments'].keys())).read()).decode('utf-8')
 
         logging.debug("image %s",image)
         

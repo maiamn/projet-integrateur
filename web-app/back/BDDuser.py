@@ -181,7 +181,8 @@ def get_labels():
         labels_dic = {}
     
         for id in id_images: 
-            labels_dic[id] = list(db.get(id) ['labels'].keys())
+            lab = db.get(id) ['labels']
+            labels_dic[id] = {e:lab[e] for e in lab}
 
         logging.debug("nb images %s",len(labels_dic))
         logging.debug("labels images %s",labels_dic)
@@ -358,8 +359,8 @@ def get_image_by_id():
          
 
         
-        logging.debug("id %s",id)
-        image = base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')
+        logging.debug("id %s",id_image)
+        image = base64.b64encode(db.get_attachment(id_image, list(db.get(id_image) ['_attachments'].keys())).read()).decode('utf-8')
 
         logging.debug("image %s",image)
         

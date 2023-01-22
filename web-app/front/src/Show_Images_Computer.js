@@ -3,7 +3,18 @@ import styled from 'styled-components';
 import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+
+const Button = styled.button`
+  border: 2px solid #000000;
+  width: 194px;
+  height: 82px;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  &: hover {
+    cursor: pointer;
+  }
+`;
 
 const PersonImage = styled.img`
     height: 130px;
@@ -69,6 +80,8 @@ export default function Show_Images_Computer() {
     const id_user = localStorage.getItem('id_user')
     const id_partie = localStorage.getItem(id_user)
 
+    const [selectedPic, setSelectedPic] = useState("")
+
     const navigate = useNavigate();
 
     const getImages = (message) => {
@@ -113,6 +126,10 @@ export default function Show_Images_Computer() {
         }
     },);
 
+    const toggleSelected = (image) => {
+        setSelectedPic(image);
+    }
+
 
     return (
         <Wrapper>
@@ -123,7 +140,7 @@ export default function Show_Images_Computer() {
                         return (
                             !selectedList[index] &&
                             <>
-                                <PersonImage src={`data:image/png;base64,${image}`} /*isSelected={selectedList[index]}*/ alt="logo" />
+                                <PersonImage onClick={() => toggleSelected(image)} src={`data:image/png;base64,${image}`} isSelected={selectedPic == image} alt="logo" />
                             </>
                         )
 
@@ -131,7 +148,11 @@ export default function Show_Images_Computer() {
                     }
                 </ImageGrid>
 
-                <Button type="button" onClick={() => navigate('/question_computer')}>Done</Button>
+                <Button type="button" onClick={() => {
+                    navigate('/question_computer')
+                    localStorage.setItem('localPic', JSON.stringify(selectedPic))
+                }
+                }>Done</Button>
             </ImageWrapper>
 
             <TabWrapper>

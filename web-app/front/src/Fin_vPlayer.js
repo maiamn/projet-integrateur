@@ -4,7 +4,18 @@ import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
-import { Button } from 'react-bootstrap';
+
+const Button = styled.button`
+  border: 2px solid #000000;
+  width: 194px;
+  height: 82px;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  &: hover {
+    cursor: pointer;
+  }
+`;
 
 const PersonImage = styled.img`
     height: 130px;
@@ -13,7 +24,8 @@ const PersonImage = styled.img`
         cursor: pointer;
         border: 3px solid #FF0000;
     }
-    border: ${props => (props.isSelected ? '3px solid #FF0000;' : '3px solid transparent')};
+    opacity: ${props => (!props.stillIn ? '1' : '0.4')};
+    border: ${props => (!props.stillIn ? '3px solid #FF0000;' : '3px solid transparent')};
 `
 const TabWrapper = styled.div`
     display: inline-block;
@@ -122,15 +134,13 @@ export default function Fin_vPlayer() {
     return (
         <Wrapper>
             <ImageWrapper>
-                <Title>End of the game</Title>
                 {won === true && <Title>You won !</Title>}
                 {won === false && <Title>You lost !</Title>}
                 <ImageGrid>
                     {imageList && Object.entries(imageList).map(([index, image]) => {
                         return (
-                            !selectedList_last[index] &&
                             <>
-                                <PersonImage src={`data:image/png;base64,${image}`} alt="logo" />
+                                <PersonImage src={`data:image/png;base64,${image}`} alt="logo" stillIn={selectedList_last[index]} />
                             </>
                         )
                     })

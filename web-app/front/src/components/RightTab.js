@@ -34,11 +34,14 @@ const Button = styled.button`
   }
 `;
 
+
 const Buttons = styled.div`
+  padding-top:20px;
   margin-top: auto;
 `;
 
 const Questions = styled.div`
+  padding-bottom: 10px;
   overflow: auto;
 `;
 
@@ -47,8 +50,7 @@ export default function RightTab(props) {
   const [isPaused, setIsPaused] = useState(false);
 
   const [time, setTime] = useState(0);
-  const name = useSelector(state => state.profile.value)
-
+  const name = localStorage.getItem('id_user')
   const navigate = useNavigate();
 
 
@@ -91,24 +93,24 @@ export default function RightTab(props) {
       <Wrapper>
         <Tab>
           <p>Guess Who ?</p>
-          <p>Player : {name}</p>
+          <p style={{ fontSize: '25px' }}>Player : {name}</p>
           <div>
-            <span>Timer : </span>
-            <span className="digits">
+            <span style={{ fontSize: '25px' }}>Timer : </span>
+            <span style={{ fontSize: '25px' }} className="digits">
               {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
             </span>
-            <span className="digits">
+            <span style={{ fontSize: '25px' }} className="digits">
               {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
             </span>
           </div>
-          <p>Last questions</p>
+          <p style={{ fontSize: '25px' }}>Last questions</p>
           <Questions>
             {Object.keys(props.questions).map((key, i) =>
 
-              (props.questions[key] === true && <p key={i + 1}>{key} : YES</p>) ||
-              (props.questions[key] === false && <p key={i + 1}>{key} : NO</p>)
+              (props.questions[key] === true && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key} YES</p>) ||
+              (props.questions[key] === false && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key} NO </p>)
               ||
-              (props.questions[key] === "" && <p key={i + 1}>{key} : </p>)
+              (props.questions[key] === "" && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key}  </p>)
 
             )}
           </Questions>
