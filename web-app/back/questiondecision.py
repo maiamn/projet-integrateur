@@ -213,7 +213,7 @@ def get_n_images_jpg_name(n):
     return(randomImages)
 
 def get_images_left_df(images_before, label_question, answer):
-    label_answer = '1' if answer else '-1'
+    label_answer = 1 if answer else -1
     return images_before.loc[images_before[label_question] == label_answer].sort_values(by="image_id")
 
 def choose_question(df,excluded_labels):
