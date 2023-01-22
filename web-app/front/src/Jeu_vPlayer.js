@@ -7,7 +7,8 @@ import './App.css';
 import { ImageList } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Button} from 'react-bootstrap';
+import Button from "./components/general/Button";
+/*import { Button} from 'react-bootstrap';*/
 
 const PersonImage = styled.img`
     height: 130px;
