@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
 import Select from 'react-select';
 import { Button } from 'react-bootstrap';
+import loader from './components/Snake.gif'
 
 const PersonImage = styled.img`
     height: 130px;
@@ -60,6 +61,8 @@ export default function Question_vComputer() {
 
     const [image_comp, setImage] = useState('')
 
+    const [isLoading, setIsLoading] = useState(true)
+
     const current_questions = JSON.parse(localStorage.getItem('currentQuestions')) ? JSON.parse(localStorage.getItem('currentQuestions')) : {}
 
     const [need_answer, setNeedAnswer] = useState(false)
@@ -79,6 +82,7 @@ export default function Question_vComputer() {
 
 
     const sendData = (message) => {
+        setIsLoading(true)
         APIService.sendToServer({ message })
             .then(response => {
 
@@ -106,6 +110,7 @@ export default function Question_vComputer() {
                     localStorage.setItem('currentQuestions', JSON.stringify(current_questions));
 
                 }
+                setIsLoading(false)
             })
             .catch(error => console.log('error', error))
     }
@@ -151,7 +156,8 @@ export default function Question_vComputer() {
     return (
         <Wrapper>
             <ImageWrapper>
-
+                { isLoading ?  <img src={loader} alt="loading..." /> :
+                <>
                 {image_comp && imagesLeft == 1 && <Title>Is it the one you chose ?</Title>}
                 {image_comp && imagesLeft == 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => setEnd(e.value == "Yes")} />}
 
@@ -176,7 +182,9 @@ export default function Question_vComputer() {
                         type="button"
                         onClick={() => clear_and_go()}
                     >Play again</Button>
-                }
+                } 
+                </>
+            }
 
             </ImageWrapper>
 
