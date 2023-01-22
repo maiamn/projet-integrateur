@@ -38,7 +38,9 @@ const Buttons = styled.div`
   margin-top: auto;
 `;
 
-
+const Questions = styled.div`
+  overflow: auto;
+`;
 
 export default function RightTab(props) {
 
@@ -100,14 +102,16 @@ export default function RightTab(props) {
             </span>
           </div>
           <p>Last questions</p>
-          {Object.keys(props.questions).map((key, i) =>
+          <Questions>
+            {Object.keys(props.questions).map((key, i) =>
 
-            (props.questions[key] === true && <p key={i + 1}>{key} : YES</p>) ||
-            (props.questions[key] === false && <p key={i + 1}>{key} : NO</p>)
-            ||
-            (props.questions[key] === "" && <p key={i + 1}>{key} : </p>)
+              (props.questions[key] === true && <p key={i + 1}>{key} : YES</p>) ||
+              (props.questions[key] === false && <p key={i + 1}>{key} : NO</p>)
+              ||
+              (props.questions[key] === "" && <p key={i + 1}>{key} : </p>)
 
-          )}
+            )}
+          </Questions>
 
           <Buttons>
             <Button onClick={() => handleStop()}>Stop</Button>
