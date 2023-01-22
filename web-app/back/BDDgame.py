@@ -96,6 +96,10 @@ def new_game():
         
         # logging.debug("query %s",query_result)
         
+        mango = ({  'selector': {'id_user': req['user'], 'id_partie': int(req['id_partie'])},  'fields': ['_id']})            
+        query_result = list(db.find(mango))
+        if query_result:
+            del db[query_result[0].id]
 
         doc = {
             "id_user": req['user'],
@@ -314,7 +318,7 @@ def delete_images(id_user,id_partie):
             "_id" : id_doc,
             "_rev" : rev_doc,
             "id_user": id_user,
-            "id_partie": id_partie,
+            "id_partie": int(id_partie),
             #"mode": mode,
             "id_images_user": ids_user,
             "id_images_default": ids_default,

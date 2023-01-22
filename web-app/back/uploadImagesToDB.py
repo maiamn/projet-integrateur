@@ -9,11 +9,11 @@ import pandas as pd
 import numpy as np
 
 # path where images are stored
-path = r'C:\Users\fifid\Documents\GitHub\projet-integrateur\Notebook\Ressources_Test\images_test'
+path = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\images_test'
 files_list = os.listdir(path)
 
 # path where labels are stored
-path_labels = r'C:\Users\fifid\Documents\GitHub\projet-integrateur\Notebook\Ressources_Test\list_attr_celeba.csv'
+path_labels = r'C:\Users\Elise\Documents\5SDBD\projet-integrateur\Notebook\Ressources_Test\list_attr_celeba.csv'
 data = pd.read_csv(path_labels, index_col=0)
 npdata = data.to_numpy()
 
