@@ -119,6 +119,52 @@ def get_images():
         }
     finally :
         return jsonify(response)
+    
+#Pour recuperer une image en fonction de son id
+@app.route("/celeb_by_id", methods=["POST"])
+def get_image_by_id():
+
+    logging.info("Get image de celebrite by id")
+
+    try :
+        
+        # Get JSON request
+        req = request.get_json()
+        logging.debug(" message from main %s",req)
+        
+        id_image = req['id']
+
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['images']
+         
+
+        
+        logging.debug("id %s",id)
+        image = base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')
+
+        logging.debug("image %s",image)
+        
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"image": image,"id":id_image},
+            "confirm": True
+        }
+        
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"image": "", 'id':""},
+            "confirm": False,
+            "error": repr(e)
+        }
+    finally :
+        return jsonify(response)
 
 #Pour recuperer des images en fonction de leurs ids
 @app.route("/celebs_by_id", methods=["POST"])

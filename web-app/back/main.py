@@ -87,16 +87,19 @@ def test_receive():
 
                     #on upload et on récupère les ids des images uploadées par le user
                     res_upload = requests.post(ad_bdd_user +'upload', data=payload, files=files_cnn, timeout=20).json()
+                    id_images_user = res_upload['id_images']
                     logging.debug("message from bdd user: %s" ,res_upload)
 
                     res_celeb = []
-                    if len(res_upload['id_images'])<20 : 
+                    if len(res_upload['id_images'])<nb_images_jeu : 
                         #on recupère des images de la bdd default pour compléter
                         res_celeb = requests.post(ad_bdd_default + 'celebs', json={ "title": "get_n_celeb_images","user": message['user'],"id_partie": message['id_partie'],"nb_images": nb_images_jeu-len(res_upload['id_images'])}, timeout=20).json()['answer']['ids']
                         logging.debug("message from BDD default: %s" ,res)
+                    elif len(res_upload['id_images'])>nb_images_jeu :
+                        id_images_user = res_upload['id_images'][:nb_images_jeu]
 
                     #on crée la bdd associée à la partie
-                    res_game = requests.post(ad_bdd_game+'new_game', json={ "user": message['user'],"id_partie": message['id_partie'],'id_images_user':res_upload['id_images'],'id_images_default':res_celeb}, timeout=20).json()
+                    res_game = requests.post(ad_bdd_game+'new_game', json={ "user": message['user'],"id_partie": message['id_partie'],'id_images_user':id_images_user,'id_images_default':res_celeb}, timeout=20).json()
                     logging.debug("message from BDD game: %s" ,res_game)
                     
                     question = {'title':"ConfirmSrv", 'user' : res['user'], 'id_partie' : res['id_partie'], 'confirm':True}
@@ -347,6 +350,11 @@ def test_receive():
 
                         for i in labels :
                             selectedImage = i
+                            
+                        if selectedImage in labels_default :
+                            selectedImage = requests.post(ad_bdd_default+'celeb_by_id', json={ "user": message['user'],"id_partie":  message['id_partie'],"id": selectedImage}, timeout=20).json()['answer']['image']
+                        else :
+                            selectedImage = requests.post(ad_bdd_user+'image_by_id', json={ "user": message['user'],"id_partie":  message['id_partie'],"id": selectedImage}, timeout=20).json()['answer']['image']
                             
                         logging.debug("selected image %s",selectedImage)
 

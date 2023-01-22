@@ -152,6 +152,7 @@ export default function Question_vComputer() {
 
         navigate('/')
     }
+    console.log(image_comp)
 
     return (
         <Wrapper>
@@ -163,7 +164,7 @@ export default function Question_vComputer() {
 
                 {end === true && <Title>Computer won</Title>}
                 {end === false && <Title>Computer Lost</Title>}
-                {imagesLeft == 0 && <Title>No picture corresponds</Title>}
+                {imagesLeft == 0 && end === false && <Title>No picture corresponds</Title>}
 
                 {need_answer && imagesLeft > 1 && <Title>Question : {question}</Title>}
                 {need_answer && imagesLeft > 1 && <Select options={[{ value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' }]} onChange={(e) => send_answer(e)} />}

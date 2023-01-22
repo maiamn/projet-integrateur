@@ -66,12 +66,22 @@ def upload_images():
         # CouchDB
         couch = couchdb.Server("http://user:user@localhost:5984")
         db = couch['user']
+        
+        mango = ({  'selector': {},  'fields': ['_id']})  
+                      
+        query_result = list(db.find(mango))
+        
+        for row in query_result:
+            logging.debug("delete image from users db")
+            print(row['_id'])
+            del db[row['_id']]
 
         #Recup les images et les labels pour chacunes des images
         for file in infos.keys():
             labels = [int(e) for e in list(content[file].split(" "))]
             labels_dic = {labels_name[i]:labels[i] for i in range(len(labels))}
             logging.debug('labels %s',labels_dic)
+            
 
             doc = {'_id':file,'labels': labels_dic}
             db.save(doc)
@@ -322,6 +332,52 @@ def get_labels_by_id():
             "user": req['user'],
             "id_partie": req['id_partie'],
             "answer": {"labels": [], 'id':""},
+            "confirm": False,
+            "error": repr(e)
+        }
+    finally :
+        return jsonify(response)
+    
+#Pour recuperer une image en fonction de son id
+@app.route("/image_by_id", methods=["POST"])
+def get_image_by_id():
+
+    logging.info("Get image de user by id")
+
+    try :
+        
+        # Get JSON request
+        req = request.get_json()
+        logging.debug(" message from main %s",req)
+        
+        id_image = req['id']
+
+        # CouchDB
+        couch = couchdb.Server("http://user:user@localhost:5984")
+        db = couch['user']
+         
+
+        
+        logging.debug("id %s",id)
+        image = base64.b64encode(db.get_attachment(id, list(db.get(id) ['_attachments'].keys())).read()).decode('utf-8')
+
+        logging.debug("image %s",image)
+        
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"image": image,"id":id_image},
+            "confirm": True
+        }
+        
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        response = {
+            "title": "AnswerSrV",
+            "user": req['user'],
+            "id_partie": req['id_partie'],
+            "answer": {"image": "", 'id':""},
             "confirm": False,
             "error": repr(e)
         }
