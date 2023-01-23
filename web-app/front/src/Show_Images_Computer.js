@@ -73,7 +73,7 @@ export default function Show_Images_Computer() {
 
     const localImages = JSON.parse(localStorage.getItem('imageList'))
     const [imageList, setImageList] = useState(localImages ? localImages : undefined)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
     const localList = JSON.parse(localStorage.getItem('selectedList'))
     const selectedList = localList ? localList : Array(20).fill(false)

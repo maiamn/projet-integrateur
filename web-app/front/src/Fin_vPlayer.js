@@ -70,7 +70,7 @@ const Title = styled.h1`
 
 export default function Fin_vPlayer() {
 
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
     const imageList = JSON.parse(localStorage.getItem('imageList')) ? JSON.parse(localStorage.getItem('imageList')) : {}
 

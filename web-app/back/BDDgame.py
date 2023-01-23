@@ -8,7 +8,11 @@ import logging
 import traceback
 import random
 import logging
-  
+
+# BDD
+bdd = "http://user:user@localhost:5984"
+# bdd = "http://user:user@192.168.37.73:50002"
+
 # Initializing flask app
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
@@ -73,7 +77,7 @@ def new_game():
         logging.debug("message from main %s",req)
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['game']
 
         logging.debug("images %s",req['id_images_user']+req['id_images_default'])
@@ -136,7 +140,7 @@ def get_img_to_guess(id_user, id_partie):
         logging.debug("id user %s",id_user)
         logging.debug("id partie %s",id_partie)
         
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['game']
 
         mango = ({  'selector': {'id_user': id_user, 'id_partie': int(id_partie)},
@@ -187,7 +191,7 @@ def get_result(id_user, id_partie, id_image):
         logging.debug("id partie %s",id_partie)
         logging.debug("id image %s",id_image)
 
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['game']
 
         mango = ({  'selector': {'id_user': id_user, 'id_partie': int(id_partie)},
@@ -227,7 +231,7 @@ def get_imgs(id_user, id_partie):
         logging.debug("id user %s",id_user)
         logging.debug("id partie %s",id_partie)
 
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['game']
 
         mango = ({  'selector': {'id_user': id_user, 'id_partie': int(id_partie)},
@@ -282,7 +286,7 @@ def delete_images(id_user,id_partie):
         logging.debug("id list delete %s",id_list_delete)
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['game']
         
         mango = ({  'selector': {'id_user': id_user, 'id_partie': int(id_partie)},

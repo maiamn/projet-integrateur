@@ -8,6 +8,10 @@ import io
 import json
 import logging
 import traceback
+
+# BDD
+bdd = "http://user:user@localhost:5984"
+# bdd = "http://user:user@192.168.37.73:50002"
   
 # Initializing flask app
 app = Flask(__name__)
@@ -64,7 +68,7 @@ def upload_images():
         logging.debug("content %s",content)
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['user']
         
         mango = ({  'selector': {},  'fields': ['_id']})  
@@ -175,7 +179,7 @@ def get_labels():
         id_images = req['images']
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['user']
         
         labels_dic = {}
@@ -259,7 +263,7 @@ def get_images_by_id():
         id_images = req['id_images_user']
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['user']
          
 
@@ -305,7 +309,7 @@ def get_labels_by_id():
         id_image = req['id_image_user']
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['user']
 
         labels_dic = {}
@@ -354,7 +358,7 @@ def get_image_by_id():
         id_image = req['id']
 
         # CouchDB
-        couch = couchdb.Server("http://user:user@localhost:5984")
+        couch = couchdb.Server(bdd)
         db = couch['user']
          
 

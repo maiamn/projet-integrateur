@@ -49,7 +49,7 @@ const PlayerName = styled.input`
 
 function MainPage() {
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate();
 
