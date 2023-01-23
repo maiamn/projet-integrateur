@@ -299,7 +299,6 @@ def delete_images(id_user,id_partie):
 
 
         for row in query_result: 
-            print(row['_id'],row['id_images_user'],row['id_images_default'])
             
             id_doc = row['_id']
             rev_doc = row['_rev']

@@ -215,7 +215,7 @@ def get_n_images_jpg_name(n):
 def get_images_left_df(images_before, label_question, answer):
     label_answer = 1 if answer else -1
     
-    print(images_before[label_question])
+    #print(images_before[label_question])
     
     return images_before.loc[images_before[label_question] == label_answer].sort_values(by="image_id")
 
@@ -223,15 +223,17 @@ def choose_question(df,excluded_labels):
     score_min = 2
     label_min = ""
     
+    ex_list = list(excluded_labels.keys())
+    
     #evaluate all scores + find the best one
     for label in df:
-        print("possible labels ",label)
+        #print("possible labels ",label)
         
-        if label != 'image_id' and label not in excluded_labels:
-            print("we can use the label ")
+        if label != 'image_id' and label not in ex_list:
+            #print("we can use the label ")
             
             nb_positive = get_images_left_df(df, label, 1)
-            print(nb_positive)
+            #print(nb_positive)
             
             score_rep = abs(len(nb_positive.values.tolist())/len(df.values.tolist())-0.5)+1
             score = score_rep * labels_weights[label]
@@ -249,7 +251,7 @@ def test():
     label_question = ""
     while len(df) > 1 :
         label_question = choose_question(df)
-        print(label_question)
+        #print(label_question)
         new_df = get_images_left_df(df, label_question, 1)
         df = new_df
         display(df)
@@ -261,8 +263,8 @@ def test():
 def get_question_to_ask(list_images,excluded_labels): 
     df = json_to_dataframe(list_images)
     
-    print("current df", df)
-    print("excluded labels ",excluded_labels)
+    #print("current df", df)
+    #print("excluded labels ",excluded_labels)
     
     label = choose_question(df,excluded_labels)
     return (questions[label]) 

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Button from "../general/Button";
+import Input from "../general/Input_file";
 
 
 export default function MultipleImageUpload(props) {
@@ -12,6 +14,8 @@ export default function MultipleImageUpload(props) {
 
   const id_user = localStorage.getItem('id_user')
   const id_partie = localStorage.getItem(id_user)
+
+  const fileInput = useRef(null)
 
   const handleChange = (event) => {
     setFiles(Array.from(event.target.files));
@@ -54,8 +58,26 @@ export default function MultipleImageUpload(props) {
 
 
   return (
-    <div>
-      <input type="file" onChange={handleChange} multiple />
+    <div style={{ 'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center' }}>
+
+      {filesList && <Button type="button" onClick={handleUpload}>Upload</Button>}
+      {filesList == undefined &&
+        <>
+          <Button
+            className='button'
+            onClick={() => fileInput.current.click()}
+          >Select Images to upload</Button>
+          <input
+            type='file'
+            name='image'
+            ref={fileInput}
+            onChange={handleChange}
+            style={{ display: 'none' }}
+            multiple
+          />
+
+        </>
+      }
 
       <ul>
         {images.map((file, i) => (
@@ -65,7 +87,6 @@ export default function MultipleImageUpload(props) {
         ))}
       </ul>
 
-      <button onClick={handleUpload}>Upload</button>
     </div>
   );
 }

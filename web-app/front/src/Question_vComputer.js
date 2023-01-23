@@ -60,17 +60,6 @@ const Title = styled.h1`
   margin-bottom: 0;
 `;
 
-const Button = styled.button`
-  border: 2px solid #000000;
-  width: 194px;
-  height: 82px;
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  &: hover {
-    cursor: pointer;
-  }
-`;
 
 export default function Question_vComputer() {
 
@@ -141,6 +130,7 @@ export default function Question_vComputer() {
                 'id_partie': id_partie,
                 'excluded': current_questions
             }
+            console.log(current_questions)
             setMessageEnvoye(message)
             sendData(message)
         }

@@ -4,18 +4,8 @@ import RightTab from "./components/RightTab"
 import './App.css';
 import { useNavigate } from 'react-router-dom';
 import loader from './components/Snake.gif'
+import Button from "./components/general/Button";
 
-const Button = styled.button`
-  border: 2px solid #000000;
-  width: 194px;
-  height: 82px;
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  &: hover {
-    cursor: pointer;
-  }
-`;
 
 
 const PersonImage = styled.img`

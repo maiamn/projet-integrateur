@@ -77,7 +77,6 @@ def upload_images():
         
         for row in query_result:
             logging.debug("delete image from users db")
-            print(row['_id'])
             del db[row['_id']]
 
         #Recup les images et les labels pour chacunes des images

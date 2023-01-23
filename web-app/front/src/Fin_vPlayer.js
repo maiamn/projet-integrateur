@@ -93,7 +93,7 @@ export default function Fin_vPlayer() {
     let last_image = ""
     console.log(last_image)
     useEffect(() => {
-        if (reponse === "" && message_envoye === "" && won === "") {
+        if (reponse === "" && message_envoye === "" && won === "" && !selectedList_last.every(element => element === true)) {
 
 
 
@@ -135,7 +135,7 @@ export default function Fin_vPlayer() {
 
                         <ImageWrapper>
                             {won === true && <Title>You won !</Title>}
-                            {won === false && <Title>You lost !</Title>}
+                            {(won === false || selectedList_last.every(element => element === true)) && <Title>You lost !</Title>}
                             <ImageGrid>
                                 {imageList && Object.entries(imageList).map(([index, image]) => {
                                     return (

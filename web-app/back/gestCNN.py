@@ -21,7 +21,7 @@ cors = CORS(app, supports_credentials=True)
 app.secret_key = "123"
 cors.init_app(app)
 
-model = '../../Notebook/saved_model/cp.h5'
+model = r"C:\Users\fifid\Documents\GitHub\projet-integrateur\Notebook\saved_model\cp.h5"
 
 #Route pour vérifier que le microservice est bien lancé
 @app.route("/", methods=["GET"])

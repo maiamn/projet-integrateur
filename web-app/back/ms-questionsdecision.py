@@ -32,11 +32,14 @@ def get_question_to_ask() :
     logging.debug("message from main %s ",mess)
 
     #on exclue les questions déjà posées
-    excluded = []
+    excluded = {}
+    
+    logging.debug("excluded before %s",mess['excluded'])
+    
     for ex in mess['excluded'] :
         for i in questiondecision.questions.keys() :
             if questiondecision.questions[i]==ex :
-                excluded.append(i)
+                excluded[i]=mess['excluded'][ex]
                 
     logging.debug("excluded %s",excluded)
             

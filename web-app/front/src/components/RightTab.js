@@ -104,7 +104,7 @@ export default function RightTab(props) {
     <>
       <Wrapper>
         <Tab>
-          <p class="title">Guess Who ?</p>
+          <p className="title">Guess Who ?</p>
           <p style={{ fontSize: '25px' }}>Player : {name}</p>
           <div>
             <span style={{ fontSize: '25px' }}>Timer : </span>

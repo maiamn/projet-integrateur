@@ -329,7 +329,6 @@ def get_labels():
     
         for id in id_images: 
             lab = db.get(id) ['labels']
-            print(lab)
             labels_dic[id] = {e:lab[e] for e in list(lab.keys())}
 
         logging.debug("nb images %s",len(labels_dic))
