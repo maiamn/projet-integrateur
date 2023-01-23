@@ -5,21 +5,10 @@ import ImportImages from "./components/Upload/ImportImages";
 import loader from './components/Snake.gif'
 import { useState } from "react";
 
+import APIService from "./APIService";
+import { getAccordionDetailsUtilityClass } from "@mui/material";
+import Button from "./components/general/Button";
 
-
-const Button = styled.button`
-  background: #d9d9d9;
-  border: 2px solid #d9d9d9;
-  text-align: center;
-  margin: 10px;
-  width: 413px;
-  height: 100px;
-  font-size: 34px;
-  &: hover {
-    cursor: pointer;
-    border: 2px solid #000000;
-  }
-`;
 
 const Title = styled.h1`
   font-style: normal;

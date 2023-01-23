@@ -2,20 +2,29 @@ import React, { useState } from "react";
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import { borderLeft } from "@mui/system";
 
 
 const Tab = styled.div`
   width: 100%;
   height: 100%;
-  background: #D9D9D9;
-  font-size: 34px;
+  font-size: 22px;
   text-align: center;
   text-transform: uppercase;
   display: flex;
   flex-direction: column;
+
+  .title {
+    font-size: 30px;
+    font-weight: 500;
+    border-top : 3px solid #FFFFFF;
+    border-bottom : 3px solid #FFFFFF;
+  }
 `;
 
 const Wrapper = styled.div`
+  height: 100%;
+  background: #D5E9DC;
   display: flex;
   position: relative;
   height: inherit;
@@ -23,11 +32,11 @@ const Wrapper = styled.div`
 `;
 
 const Button = styled.button`
-  border: 2px solid #000000;
   width: 194px;
-  height: 82px;
+  height: 70px;
   font-size: 34px;
-  font-weight: 700;
+  font-weight: 500;
+  border-radius: 5px;
   margin-bottom: 20px;
   &: hover {
     cursor: pointer;
@@ -38,6 +47,9 @@ const Button = styled.button`
 const Buttons = styled.div`
   padding-top:20px;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Questions = styled.div`
@@ -92,7 +104,7 @@ export default function RightTab(props) {
     <>
       <Wrapper>
         <Tab>
-          <p>Guess Who ?</p>
+          <p class="title">Guess Who ?</p>
           <p style={{ fontSize: '25px' }}>Player : {name}</p>
           <div>
             <span style={{ fontSize: '25px' }}>Timer : </span>
@@ -107,10 +119,10 @@ export default function RightTab(props) {
           <Questions>
             {Object.keys(props.questions).map((key, i) =>
 
-              (props.questions[key] === true && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key} YES</p>) ||
-              (props.questions[key] === false && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key} NO </p>)
+              (props.questions[key] === true && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px", fontWeight: '800' }} key={i + 1}>{key} YES</p>) ||
+              (props.questions[key] === false && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px", fontWeight: '800' }} key={i + 1}>{key} NO </p>)
               ||
-              (props.questions[key] === "" && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px" }} key={i + 1}>{key}  </p>)
+              (props.questions[key] === "" && <p style={{ fontSize: '20px', textAlign: 'left', paddingLeft: "20px", fontWeight: '800' }} key={i + 1}>{key}  </p>)
 
             )}
           </Questions>

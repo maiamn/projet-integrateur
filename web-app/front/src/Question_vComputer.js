@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
 import Select from 'react-select';
 import loader from './components/Snake.gif'
+import Button from "./components/general/Button";
+/*import { Button} from 'react-bootstrap';*/
+
 
 const PersonImage = styled.img`
     height: 130px;

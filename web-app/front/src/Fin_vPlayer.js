@@ -6,17 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import APIService from './APIService';
 import loader from './components/Snake.gif'
 
-const Button = styled.button`
-  border: 2px solid #000000;
-  width: 194px;
-  height: 82px;
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  &: hover {
-    cursor: pointer;
-  }
-`;
+import Button from "./components/general/Button";
+/*import { Button} from 'react-bootstrap';*/
 
 const PersonImage = styled.img`
     height: 130px;
