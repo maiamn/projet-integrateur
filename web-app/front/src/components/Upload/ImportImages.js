@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../general/Button";
-import Input from "../general/Input_file";
 
 
 export default function MultipleImageUpload(props) {

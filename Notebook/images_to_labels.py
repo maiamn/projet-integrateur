@@ -4,8 +4,8 @@
 # In[25]:
 
 
-#f = "/home/ingargio/projet/test"
-#MODEL_PATH = "/home/ingargio/saved_model_50000/cp.h5"
+# f = r"C:\Users\fifid\Pictures\test_groupe"
+# MODEL_PATH = r"C:\Users\fifid\Documents\GitHub\projet-integrateur\Notebook\saved_model\cp.h5"
 
 
 # In[9]:
@@ -98,6 +98,12 @@ def predict_labels(model,images,unique_labels):
     
     data = {j:[] for j in unique_labels}
     data['image_id']= []
+    
+    # for file in os.listdir(images):
+    #     f_img = images+"/"+file
+
+    #     #load image
+    #     my_image = load_img(f_img, target_size=(224, 224))
 
     for file in images.keys():
         img = images[file]
@@ -192,6 +198,6 @@ def predicted(model_path,images):
 # In[32]:
 
 
-#df = predicted(MODEL_PATH,f)
-#df
+# df = predicted(MODEL_PATH,f)
+# df
 

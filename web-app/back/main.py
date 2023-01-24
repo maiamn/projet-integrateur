@@ -24,6 +24,7 @@ ad_bdd_default = 'http://localhost:9000/'
 ad_bdd_game = 'http://localhost:7002/'
 ad_bdd_user = 'http://localhost:8000/'
 ad_gest_cnn = 'http://localhost:7000/'
+#ad_ms = 'http://192.168.37.73:50003/'
 ad_ms = 'http://localhost:7001/'
 nb_images_jeu = 20
 
