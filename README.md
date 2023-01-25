@@ -13,7 +13,7 @@ Ce projet implémente une adaptation du jeu "Qui est-ce ?" en utilisant une arch
 
 Vous pouvez trouver ici le notebook Final_tests, qui vous permet d'utiliser le modèle enregistré pour le tester sur vos propres photos en fournissant un chemin vers le dossier contenant vos photos.
 
-## models:
+## models
 
 Deux modèles sont visibles, V2 et V3, cependant la V3 ne fonctionne pas. Le modèle V2 est celui que nous utilisons pour nos résultats.
 
@@ -23,7 +23,9 @@ Le modèle enregistré à été obtenu suite à un entrainement de 202 599 photo
 
 Vous devriez pouvoir accéder à nos courbes via le lien suivant : https://tensorboard.dev/experiment/viVHbZiMQKe9Ndi0py2juw/#scalars&run=train
 
-## Pour lancer l'application web:
+## web-app
+
+### Pour lancer l'application web:
 1) Vous devez avoir python installé sur votre machine.
 2) Vous devez avoir npm installé sur votre machine.
 3) Placez-vous dans le dossier web-app/back et lancez la commande "pip install requirements.txt" afin d'installer les dépendances python
